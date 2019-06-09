@@ -12,5 +12,11 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 
 # The following folder will be included
 include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_SOURCE_DIR}/lib")
 
-add_executable(derby_gameserver ${PROJECT_SOURCE_DIR}/src/main.cpp)
+set(SOURCES 
+        ${PROJECT_SOURCE_DIR}/src/main.cpp 
+        ${PROJECT_SOURCE_DIR}/src/Player.cpp)
+
+add_executable(derby_gameserver ${SOURCES})
+target_include_directories(derby_gameserver PRIVATE ${PROJECT_SOURCE_DIR}/src/)

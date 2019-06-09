@@ -6,7 +6,8 @@
         {
             "label": "Run Game Server",
             "type": "shell",
-            "command": "./bin/derby_gameserver"
+            "command": "./bin/derby_gameserver",
+            "problemMatcher": []
         }
     ]
 }
