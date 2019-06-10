@@ -1,7 +1,5 @@
 #include <iostream>
 
-//#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/trivial.hpp>
 #include "Arena.hpp"
 #include "Box2D/Box2D.h"
 #include "util/log.hpp"
