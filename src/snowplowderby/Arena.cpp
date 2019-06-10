@@ -44,21 +44,25 @@ Player* Arena::create_player() {
     fixture_def.shape = &box;
     body->CreateFixture(&fixture_def);
 
-    Player* player = new Player(body);
+    Player* player = new Player(next_player_id++, body);
     body->SetUserData(player->get_user_data());
 
-    players.push_back(player);
+    players.insert(std::make_pair(player->get_id(), player));
 
     return player;
 }
 
+void Arena::destroy_player(Player* player) {
+
+}
+
 Arena::~Arena() {
     for (auto it = players.begin(); it != players.end(); it++) {
-        delete *it;
+        delete it->second;
     }
 }
 
 void Arena::update() {
-    LOG_TRACE(logger) << "Stepping";
+    LOG_TRACE(logger) << "Updating arena";
     phys_world.Step(TIME_STEP, 6, 2);
 }

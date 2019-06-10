@@ -1,12 +1,12 @@
 #include "Client.hpp"
 
 
-using namespace snowplowderby;
+using namespace snowplowderby::client;
 using namespace boost::log::trivial;
 
 util::Logger Client::logger = util::get_logger("Client");
 
-Client::Client(/* args */) {
+Client::Client() {
 }
 
 Client::~Client() {
