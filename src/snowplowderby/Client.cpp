@@ -4,7 +4,7 @@
 using namespace snowplowderby;
 using namespace boost::log::trivial;
 
-util::Logger Client::logger = util::getLogger("Client");
+util::Logger Client::logger = util::get_logger("Client");
 
 Client::Client(/* args */) {
 }

@@ -12,13 +12,13 @@ namespace snowplowderby {
 
     class Arena {
         private:
-            b2World physWorld;
+            b2World phys_world;
             std::vector<Player*> players;
         public:
             Arena();
             ~Arena();
 
-            Player* createPlayer();
+            Player* create_player();
 
             void update();
     };

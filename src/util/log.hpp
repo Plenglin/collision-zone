@@ -32,6 +32,6 @@ namespace util {
     typedef boost::log::sources::severity_logger<severity_level> Logger;
 
     void initialize_logging();
-    Logger getLogger(std::string tag);
+    Logger get_logger(std::string tag);
     
 }
