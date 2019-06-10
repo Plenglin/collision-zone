@@ -2,6 +2,7 @@
 
 
 using namespace snowplowderby;
+using namespace boost::log::trivial;
 
 util::Logger Client::logger = util::getLogger("Client");
 

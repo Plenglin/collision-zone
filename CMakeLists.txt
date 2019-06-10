@@ -17,8 +17,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
-set(SOURCES   ${PROJECT_SOURCE_DIR}/src/main.cpp 
-              ${PROJECT_SOURCE_DIR}/src/util/log.cpp 
+set(SOURCES   ${PROJECT_SOURCE_DIR}/src/util/log.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Client.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp)
@@ -27,5 +26,5 @@ file(GLOB_RECURSE BOX2D_LIB
        ${PROJECT_SOURCE_DIR}/lib/Box2D/*.cpp
        ${PROJECT_SOURCE_DIR}/lib/Box2D/*.h)
 
-add_executable(derby_gameserver ${SOURCES} ${BOX2D_LIB})
+add_executable(derby_gameserver ${PROJECT_SOURCE_DIR}/src/main.cpp ${SOURCES} ${BOX2D_LIB})
 target_link_libraries(derby_gameserver ${Boost_LIBRARIES})
