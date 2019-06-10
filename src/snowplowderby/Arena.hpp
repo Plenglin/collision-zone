@@ -3,9 +3,9 @@
 #include <Box2D/Box2D.h>
 #include <Box2D/Common/b2Math.h>
 #include <vector>
-#include "util/log.hpp"
 
 #include "Player.hpp"
+#include "util/log.hpp"
 
 #define TIME_STEP 0.05
 

@@ -10,8 +10,8 @@ namespace snowplowderby {
     class Client {
     private:
         static util::Logger logger;
-        Arena* arena;
-        Player* player;
+        Arena* arena = nullptr;
+        Player* player = nullptr;
     public:
         Client(/* args */);
         ~Client();

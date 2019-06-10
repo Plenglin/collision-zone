@@ -13,5 +13,6 @@ Client::~Client() {
 }
 
 void Client::attach(Arena* arena, Player* player) {
-
+    this->arena = arena;
+    this->player = player;
 }

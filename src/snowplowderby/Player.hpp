@@ -13,7 +13,7 @@ namespace snowplowderby {
         util::UserDataWrapper user_data;
     public:
         Player(b2Body* body);
-        inline util::UserDataWrapper* get_user_data();
+        util::UserDataWrapper* get_user_data();
     };
 
 }
