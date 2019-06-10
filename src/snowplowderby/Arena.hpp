@@ -2,7 +2,7 @@
 
 #include <Box2D/Box2D.h>
 #include <Box2D/Common/b2Math.h>
-#include <vector>
+#include <unordered_map>
 
 #include "Player.hpp"
 #include "util/log.hpp"
@@ -15,12 +15,14 @@ namespace snowplowderby {
         private:
             static util::Logger logger;
             b2World phys_world;
-            std::vector<Player*> players;
+            std::unordered_map<long, Player*> players;
+            long next_player_id = 0;
         public:
             Arena();
             ~Arena();
 
             Player* create_player();
+            void destroy_player(Player* player);
 
             void update();
     };

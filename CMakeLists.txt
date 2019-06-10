@@ -11,17 +11,23 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(Boost_USE_STATIC_LIBS ON) 
 set(Boost_USE_MULTITHREADED ON)  
 set(Boost_USE_STATIC_RUNTIME ON) 
-find_package(Boost 1.62.0 COMPONENTS log) 
+find_package(Boost 1.62.0 COMPONENTS log ) 
 include_directories(${Boost_INCLUDE_DIRS})
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
-set(SOURCES   ${PROJECT_SOURCE_DIR}/src/util/log.cpp 
-              ${PROJECT_SOURCE_DIR}/src/util/physics.cpp 
-              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
-              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Client.cpp 
-              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp)
+set(SOURCES   
+       ${PROJECT_SOURCE_DIR}/src/util/log.cpp 
+       ${PROJECT_SOURCE_DIR}/src/util/physics.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/client/Client.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/event/Event.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/server/Server.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/websocket/WebSocketClient.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/websocket/WebSocketListener.cpp 
+)
 
 file(GLOB_RECURSE BOX2D_LIB
        ${PROJECT_SOURCE_DIR}/lib/Box2D/*.cpp
