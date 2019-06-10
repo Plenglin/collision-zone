@@ -18,9 +18,9 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
 set(SOURCES   ${PROJECT_SOURCE_DIR}/src/main.cpp 
-              ${PROJECT_SOURCE_DIR}/src/Player.cpp 
-              ${PROJECT_SOURCE_DIR}/src/Client.cpp 
-              ${PROJECT_SOURCE_DIR}/src/Arena.cpp)
+              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
+              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Client.cpp 
+              ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp)
 
 file(GLOB_RECURSE BOX2D_LIB
        ${PROJECT_SOURCE_DIR}/lib/Box2D/*.cpp
