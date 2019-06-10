@@ -3,7 +3,24 @@
 
 using namespace snowplowderby;
 
+
+util::Logger Arena::logger = util::get_logger("SPD-Arena");
+
+class ContactListener : public b2ContactListener {
+private:
+    Arena* arena;
+public:
+    ContactListener(Arena* arena) : arena(arena) {}
+    
+    void BeginContact(b2Contact* contact) {
+        auto body_a = contact->GetFixtureA()->GetBody();
+        auto body_b = contact->GetFixtureB()->GetBody();
+    }
+};
+
 Arena::Arena() : phys_world(b2Vec2_zero) {
+    ContactListener contact_listener(this);
+    phys_world.SetContactListener(&contact_listener);
 }
 
 Player* Arena::create_player() {
@@ -18,6 +35,7 @@ Player* Arena::create_player() {
     body->CreateFixture(&fixture_def);
 
     Player* player = new Player(body);
+    body->SetUserData(player->get_user_data());
 
     players.push_back(player);
 

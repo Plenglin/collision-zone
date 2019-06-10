@@ -3,6 +3,7 @@
 #include <Box2D/Box2D.h>
 #include <Box2D/Common/b2Math.h>
 #include <vector>
+#include "util/log.hpp"
 
 #include "Player.hpp"
 
@@ -12,6 +13,7 @@ namespace snowplowderby {
 
     class Arena {
         private:
+            static util::Logger logger;
             b2World phys_world;
             std::vector<Player*> players;
         public:
