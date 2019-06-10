@@ -18,6 +18,7 @@ include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
 set(SOURCES   ${PROJECT_SOURCE_DIR}/src/main.cpp 
+              ${PROJECT_SOURCE_DIR}/src/util/log.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Client.cpp 
               ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp)
