@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Arena.hpp"
+#include "snowplowderby/Arena.hpp"
 #include "Box2D/Box2D.h"
 #include "util/log.hpp"
 #include "websocketpp/server.hpp"
