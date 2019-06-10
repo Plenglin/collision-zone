@@ -25,7 +25,7 @@ void util::initialize_logging() {
     );
 }
 
-util::Logger util::getLogger(std::string tag) {
+util::Logger util::get_logger(std::string tag) {
     Logger logger;
     attrs::mutable_constant<std::string> tagAttr(tag);
     logger.add_attribute(LOGGING_TAG_ATTR_NAME, tagAttr);

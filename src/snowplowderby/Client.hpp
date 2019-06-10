@@ -17,7 +17,7 @@ namespace snowplowderby {
         ~Client();
 
         void attach(Arena* arena, Player* player);
-        virtual void sendToClient() = 0;
+        virtual void send_data_to_client() = 0;
     };
 
 }

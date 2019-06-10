@@ -11,12 +11,12 @@ int main() {
     Arena arena;
 
     util::initialize_logging();
-    auto log = util::getLogger("Main");
-LOG_TRACE(log) << "asdf";
-LOG_DEBUG(log) << "asdf";
-LOG_INFO(log) << "asdf";
-LOG_WARN(log) << "asdf";
-LOG_ERROR(log) << "asdf";
-LOG_FATAL(log) << "asdf";
+    auto log = util::get_logger("Main");
+    LOG_TRACE(log) << "asdf";
+    LOG_DEBUG(log) << "asdf";
+    LOG_INFO(log) << "asdf";
+    LOG_WARN(log) << "asdf";
+    LOG_ERROR(log) << "asdf";
+    LOG_FATAL(log) << "asdf";
     return 0;
 }
