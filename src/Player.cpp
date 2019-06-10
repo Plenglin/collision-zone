@@ -1,5 +1,6 @@
 #include "Player.hpp"
 
-Player::Player() {
-    pos = b2Vec2{3., 5.};
+using namespace snowplowderby;
+
+Player::Player(b2Body* body) : body(body) {
 }

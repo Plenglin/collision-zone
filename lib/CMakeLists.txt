@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project(box2d)
+add_library(test STATIC Box2D.h)
+install(TARGETS test DESTINATION lib)
+install(FILES test.h DESTINATION include)

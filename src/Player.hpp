@@ -1,8 +1,14 @@
+#pragma once
+
 #include <Box2D/Box2D.h>
 
-class Player {
-private:
-    b2Vec2 pos;
-public:
-    Player();
-};
+namespace snowplowderby {
+
+    class Player {
+    private:
+        b2Body* body;
+    public:
+        Player(b2Body* body);
+    };
+
+}

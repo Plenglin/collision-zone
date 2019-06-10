@@ -14,9 +14,10 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
-set(SOURCES 
-        ${PROJECT_SOURCE_DIR}/src/main.cpp 
-        ${PROJECT_SOURCE_DIR}/src/Player.cpp)
+set(SOURCES ${PROJECT_SOURCE_DIR}/src/main.cpp ${PROJECT_SOURCE_DIR}/src/Player.cpp ${PROJECT_SOURCE_DIR}/src/Arena.cpp)
+file(GLOB_RECURSE BOX2D_LIB
+       ${PROJECT_SOURCE_DIR}/lib/Box2D/*.cpp
+       ${PROJECT_SOURCE_DIR}/lib/Box2D/*.h)
 
-add_executable(derby_gameserver ${SOURCES})
-target_include_directories(derby_gameserver PRIVATE ${PROJECT_SOURCE_DIR}/src/)
+add_executable(derby_gameserver ${SOURCES} ${BOX2D_LIB})
+#target_sources(derby_gameserver PRIVATE lib/Box2D/Box2D.h)
