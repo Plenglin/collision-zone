@@ -69,3 +69,5 @@ _deps
 ### Binaries and compile output
 build/
 bin/
+log/
+*.log
