@@ -1,4 +1,7 @@
-export class GameScene extends Phaser.Scene {
+import { Scene } from "phaser";
+import { Player } from "game/player.js";
+
+export class GameScene extends Scene {
     constructor() {
         super('GameScene');
         this.socket = null;
@@ -27,8 +30,8 @@ export class GameScene extends Phaser.Scene {
     }
     create() {
         console.info("GAME PHASE: Create");
-        const player = Player(this.scene);
-        this.scene.add(player);
+        const player = new Player(this.scene.scene);
+        this.scene.scene.add.existing(player);
     }
     update() {
         console.debug("GAME PHASE: Update loop");
