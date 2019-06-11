@@ -23,4 +23,6 @@ app.use('/static/scripts/phaser', express.static('./node_modules/phaser/dist'));
 app.use('/static/styles', express.static('./public/styles'));
 app.use('/static/styles/bootstrap', express.static('./node_modules/bootstrap/dist/css'));
 
+app.use('/static/images/', express.static('./public/images'));
+
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
