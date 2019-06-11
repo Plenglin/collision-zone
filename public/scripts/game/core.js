@@ -1,7 +1,7 @@
-var config = {
+const PHASER_CONFIG = {
     type: Phaser.AUTO,
     scale: {
-        parent: 'game-div',
+        parent: 'phaser-div',
         mode: Phaser.Scale.RESIZE,
         resizeInterval: 500
     },
@@ -12,8 +12,8 @@ var config = {
     }
 };
 
-console.info("Creating game");
-var game = new Phaser.Game(config);
+const phaser = new Phaser.Game(PHASER_CONFIG);
+const inst = new GameInstance(phaser);
 
 function preload() {
     console.info("GAME PHASE: Preload");
@@ -31,3 +31,5 @@ function create() {
 function update() {
     console.debug("GAME PHASE: Update loop");
 }
+
+inst.connectToServer();
