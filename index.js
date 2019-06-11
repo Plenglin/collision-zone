@@ -19,6 +19,7 @@ app.use('/static/scripts', express.static('./public/scripts'));
 app.use('/static/scripts/bootstrap', express.static('./node_modules/bootstrap/dist/js'));
 app.use('/static/scripts/jquery', express.static('./node_modules/jquery/dist'));
 app.use('/static/scripts/phaser', express.static('./node_modules/phaser/dist'));
+
 app.use('/static/styles', express.static('./public/styles'));
 app.use('/static/styles/bootstrap', express.static('./node_modules/bootstrap/dist/css'));
 
