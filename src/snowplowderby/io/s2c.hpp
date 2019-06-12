@@ -1,3 +1,5 @@
+#include <string>
+
 #define PLAYER_ALIVE_FLAG 1
 #define PLAYER_BOOSTING_FLAG 2
 
@@ -10,8 +12,13 @@ namespace snowplowderby::io::s2c {
         char flags;
     };
 
+    struct PlayerInitial {
+        Player periodic;
+        std::string username;
+    };
+
     struct InitialPayload {
-        //int wall_count;
-        //WallData* walls;
+        std::string version;
+        Player* players;
     };
 } 

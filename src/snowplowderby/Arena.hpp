@@ -15,8 +15,9 @@ namespace snowplowderby {
         private:
             static util::Logger logger;
             b2World phys_world;
-            std::unordered_map<long, Player*> players;
-            long next_player_id = 0;
+            std::unordered_map<short, Player*> players;
+            short next_player_id = 0;
+
         public:
             Arena();
             ~Arena();

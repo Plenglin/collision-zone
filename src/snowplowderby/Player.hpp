@@ -12,16 +12,16 @@ namespace snowplowderby {
 
     class Player {
     private:
-        const long id;
+        const short id;
         b2Body* body;
 
         bool alive = true;
 
         util::UserDataWrapper user_data;
     public:
-        Player(long id, b2Body* body);
-        
-        long get_id();
+        Player(short id, b2Body* body);
+
+        short get_id();
         bool is_alive();
         bool is_boosting();
 
