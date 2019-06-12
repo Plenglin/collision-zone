@@ -31,6 +31,7 @@ void WebSocketClientSource::initialize() {
 }
 
 void WebSocketClientSource::set_up_handlers() {
+    LOG_DEBUG(logger) << "Setting up handlers";
     server.set_open_handler([this](connection_hdl handle) {
         LOG_INFO(logger) << "A new connection was made with handle: " << handle.lock().get();
         auto conn = server.get_con_from_hdl(handle);

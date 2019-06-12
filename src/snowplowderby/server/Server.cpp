@@ -16,16 +16,18 @@ void Server::run() {
     using namespace std::chrono;
     auto last_update = system_clock::now();
     for (auto it = client_sources.begin(); it != client_sources.end(); it++) {
-        LOG_INFO(logger) << "Initializing client source " << (*it)->get_name();
+        LOG_DEBUG(logger) << "Initializing client source " << (*it)->get_name();
         (*it)->initialize();
     }
+
+    LOG_INFO(logger) << "Initialization successful! Starting game loop";
     while (true) {
-        auto current_time = system_clock::now();
+        auto loop_start_time = system_clock::now();
         arena->update();
         for (auto it = client_sources.begin(); it != client_sources.end(); it++) {
             (*it)->update();
         }
-        std::this_thread::sleep_until(current_time + milliseconds(UPDATE_PERIOD));
+        std::this_thread::sleep_until(loop_start_time + milliseconds(UPDATE_PERIOD));
     }
 }
 
