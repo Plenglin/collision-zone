@@ -7,4 +7,10 @@ export class GameServer {
         };
         this.socket.onmessage = this.onmessage;
     }
+
+    onmessage(data) {
+        console.debug("Received message", data);
+        
+    }
+
 }

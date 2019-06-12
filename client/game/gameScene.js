@@ -17,9 +17,6 @@ export class GameScene extends Scene {
             self.server = new GameServer(data.url);
         });
     }
-    onSocketMessage(data) {
-        console.debug("Received message", data);
-    }
     preload() {
         console.info("GAME PHASE: Preload");
         const currentUrl = window.location;
