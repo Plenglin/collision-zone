@@ -1,6 +1,7 @@
+#include "Arena.hpp"
+
 #include <Box2D/Box2D.h>
 
-#include "Arena.hpp"
 #include "Player.hpp"
 
 using namespace snowplowderby;
@@ -65,4 +66,12 @@ Arena::~Arena() {
 void Arena::update() {
     LOG_TRACE(logger) << "Updating arena";
     phys_world.Step(TIME_STEP, 6, 2);
+}
+
+void Arena::write_update_bytes(std::ostream& os) {
+    unsigned short count = players.size();
+    os << count;
+    for (auto it = players.begin(); it != players.end(); it++) {
+        it->second->write_update_bytes(os);
+    }
 }
