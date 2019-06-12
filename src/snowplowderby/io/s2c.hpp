@@ -1,5 +1,5 @@
 #define PLAYER_ALIVE_FLAG 1
-#define PLAYER__FLAG 2
+#define PLAYER_BOOSTING_FLAG 2
 
 namespace snowplowderby::io::s2c {
     struct Player {
