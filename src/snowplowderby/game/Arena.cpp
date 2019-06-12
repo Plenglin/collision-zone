@@ -72,12 +72,13 @@ void Arena::write_initial_bytes(std::ostream& os) {
 
 void Arena::write_update_bytes(std::ostream& os) {
     unsigned short new_player_count = new_players.size();
+    os.write(reinterpret_cast<const char*>(&new_player_count), 2);
     for (auto it = new_players.begin(); it != new_players.end(); it++) {
         (*it)->write_initial_bytes(os);
     }
 
     unsigned short player_count = players.size();
-    os << player_count;
+    os.write(reinterpret_cast<const char*>(&player_count), 2);
     for (auto it = players.begin(); it != players.end(); it++) {
         it->second->write_update_bytes(os);
     }

@@ -12,8 +12,14 @@ WebSocketClient::WebSocketClient(std::shared_ptr<WSPPConnection> connection) : c
         auto payload = message->get_payload();
         LOG_TRACE(logger) << "Received message from " << handle_raw << ": " << payload;
     });
+
+    //connection->send()
 }
 
 WebSocketClient::~WebSocketClient() {
     
+}
+
+void WebSocketClient::send_binary(std::string data) {
+    connection->send(data, frame::opcode::binary);
 }
