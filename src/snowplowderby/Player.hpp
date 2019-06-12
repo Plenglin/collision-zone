@@ -4,6 +4,8 @@
 #include "util/physics.hpp"
 #include <list>
 
+#include "snowplowderby/io/s2c.hpp"
+
 #define USERDATA_TYPE_PLAYER 13498931
 
 namespace snowplowderby {
@@ -21,8 +23,10 @@ namespace snowplowderby {
         
         long get_id();
         bool is_alive();
+        bool is_boosting();
 
         util::UserDataWrapper* get_user_data();
+        io::s2c::Player serialize();
     };
 
 }
