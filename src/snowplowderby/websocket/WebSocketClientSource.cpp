@@ -10,21 +10,24 @@ using websocketpp::lib::bind;
 
 util::Logger WebSocketClientSource::logger = util::get_logger("SPD-WebSocketClientSource");
 
-WebSocketClientSource::WebSocketClientSource(int port) : port(port) {
+WebSocketClientSource::WebSocketClientSource(int port) : port(port), websocket_thread(nullptr) {
     
 }
 
 WebSocketClientSource::~WebSocketClientSource() {
-
+    delete websocket_thread;
 }
 
-void WebSocketClientSource::begin() {
-    LOG_INFO(logger) << "Beginning";
+void WebSocketClientSource::initialize() {
+    LOG_INFO(logger) << "Initializing websocket server";
     server.init_asio();
     set_up_handlers();
     server.listen(port);
     server.start_accept();
-    server.run();
+    websocket_thread = new std::thread([this](){
+        LOG_INFO(logger) << "Websocket thread started";
+        server.run();
+    });
 }
 
 void WebSocketClientSource::set_up_handlers() {
@@ -38,4 +41,8 @@ void WebSocketClientSource::set_up_handlers() {
 
 void WebSocketClientSource::update() {
     
+}
+
+std::string WebSocketClientSource::get_name() {
+    return "WebSocket";
 }

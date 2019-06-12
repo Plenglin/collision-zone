@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "snowplowderby/game/Arena.hpp"
 
@@ -12,6 +13,10 @@ namespace snowplowderby::client {
     public:
         ClientSource();
         void set_arena(ArenaPtr arena);
+
+        virtual std::string get_name() = 0;
+        
+        virtual void initialize() = 0;
         virtual void update() = 0;
     };
 
