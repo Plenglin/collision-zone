@@ -8,12 +8,15 @@
 #include "snowplowderby/client/ClientSource.hpp"
 #include "snowplowderby/game/Arena.hpp"
 
+#include "util/log.hpp"
+
 using namespace snowplowderby;
 using namespace snowplowderby::client;
 
 namespace snowplowderby::server {
     class Server {
     private:
+        static util::Logger logger;
         ArenaPtr arena;
         std::list<ClientSourcePtr> client_sources;
         std::list<ClientPtr> clients;

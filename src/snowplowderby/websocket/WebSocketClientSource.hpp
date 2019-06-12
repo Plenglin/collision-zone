@@ -4,6 +4,7 @@
 #include <websocketpp/server.hpp>
 #include <vector>
 #include <memory>
+#include <thread>
 
 #include "WebSocketClient.hpp"
 #include "snowplowderby/client/ClientSource.hpp"
@@ -19,13 +20,15 @@ namespace snowplowderby::websocket {
         WSPPServer server;
         int port;
         std::vector<std::shared_ptr<WebSocketClient>> clients;
+        std::thread* websocket_thread;
 
         void set_up_handlers();
     public:
         WebSocketClientSource(int port);
         ~WebSocketClientSource();
 
-        void begin();
+        std::string get_name() override;
+        void initialize() override;
         void update() override;
     };
 

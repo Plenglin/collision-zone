@@ -3,6 +3,8 @@
 
 using namespace snowplowderby::server;
 
+util::Logger Server::logger = util::get_logger("SPD-Server");
+
 Server::Server() : arena(new Arena()) {
 }
 
@@ -10,8 +12,13 @@ Server::~Server() {
 }
 
 void Server::run() {
+    LOG_INFO(logger) << "Running server";
     using namespace std::chrono;
     auto last_update = system_clock::now();
+    for (auto it = client_sources.begin(); it != client_sources.end(); it++) {
+        LOG_INFO(logger) << "Initializing client source " << (*it)->get_name();
+        (*it)->initialize();
+    }
     while (true) {
         auto current_time = system_clock::now();
         arena->update();
