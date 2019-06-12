@@ -69,7 +69,7 @@ void Arena::update() {
 }
 
 void Arena::write_initial_bytes(std::ostream& os) {
-
+    
 }
 
 void Arena::write_update_bytes(std::ostream& os) {

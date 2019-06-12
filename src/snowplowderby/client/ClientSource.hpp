@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "snowplowderby/Arena.hpp"
+#include "snowplowderby/game/Arena.hpp"
 
 namespace snowplowderby::client {
     
