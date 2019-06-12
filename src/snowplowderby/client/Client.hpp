@@ -1,7 +1,7 @@
 #pragma once
 
-#include "snowplowderby/Arena.hpp"
-#include "snowplowderby/Player.hpp"
+#include "snowplowderby/game/Arena.hpp"
+#include "snowplowderby/game/Player.hpp"
 #include "util/log.hpp"
 #include <mutex>
 #include <queue>
