@@ -68,9 +68,18 @@ void Arena::update() {
     phys_world.Step(TIME_STEP, 6, 2);
 }
 
+void Arena::write_initial_bytes(std::ostream& os) {
+
+}
+
 void Arena::write_update_bytes(std::ostream& os) {
-    unsigned short count = players.size();
-    os << count;
+    unsigned short new_player_count = new_players.size();
+    for (auto it = new_players.begin(); it != new_players.end(); it++) {
+        (*it)->write_initial_bytes(os);
+    }
+
+    unsigned short player_count = players.size();
+    os << player_count;
     for (auto it = players.begin(); it != players.end(); it++) {
         it->second->write_update_bytes(os);
     }

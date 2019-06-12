@@ -2,6 +2,7 @@
 
 #include <Box2D/Box2D.h>
 #include <Box2D/Common/b2Math.h>
+#include <list>
 #include <unordered_map>
 #include <ostream>
 
@@ -17,7 +18,7 @@ namespace snowplowderby {
             static util::Logger logger;
             b2World phys_world;
             std::unordered_map<short, Player*> players;
-            //std::vector
+            std::list<PlayerPtr> new_players;
             short next_player_id = 0;
         public:
             Arena();
@@ -28,17 +29,7 @@ namespace snowplowderby {
 
             void update();
 
-            template <typename Writer>
-            void serialize_initial(Writer& writer) const {
-                writer.StartObject();
-
-                writer.String("players");
-                for (auto it = players.begin(); it != players.end(); it++) {
-                    it->second->serialize_initial(writer);
-                }
-                writer.EndObject();
-            }
-
+            void write_initial_bytes(std::ostream& os);
             void write_update_bytes(std::ostream& os);
     };
 

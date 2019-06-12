@@ -9,6 +9,10 @@ util::UserDataWrapper* Player::get_user_data() {
     return &user_data;
 }
 
+char Player::get_car_class() {
+    return car_class;
+}
+
 short Player::get_id() {
     return id;
 }
@@ -19,6 +23,13 @@ bool Player::is_alive() {
 
 bool Player::is_boosting() {
     return false;
+}
+
+void Player::write_initial_bytes(std::ostream& os) {
+    os << get_id() << get_car_class();
+    for (int i = 0; i < PLAYER_NAME_LENGTH_LIMIT; i++) {
+        os << name[i];
+    }
 }
 
 void Player::write_update_bytes(std::ostream& os) {
@@ -32,5 +43,5 @@ void Player::write_update_bytes(std::ostream& os) {
         flags |= PLAYER_BOOSTING_FLAG;
     }
     
-    os << id << pos.x << pos.y << body->GetAngle() << vel.x << vel.y << flags;
+    os << get_id() << pos.x << pos.y << body->GetAngle() << vel.x << vel.y << flags;
 }

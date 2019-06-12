@@ -29,29 +29,14 @@ A client can be a PLAYER or a SPECTATOR.
 
 ## Server -> Client Types
 
-### `InitialPlayer: JSON`
-
-Name | Type | Description 
------|------|-------------
-id | int | the id of the player
-name | string | display name of the player
-
-The client, upon receiving this object, will not know the position or status of the players. This is fine, because UpdatePayload is sent so regularly it will not be necessary. 
-
-### `InitialPayload: JSON`
-
-Name | Type | Description 
------|------|-------------
-version | string | server version
-players | InitialPlayer[] | all players currently on
-
-### `UpdatePayload: bytes`
+### `InitialPlayer: bytes`
 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
-player_count | int | 2 | how many players there are
-players | InitialPlayer[] | player_count * size | the players
-**TOTAL** | | **VARIABLE** | 
+id | int | 2 | the id of the player
+player_class | int | 1 | the enumerated player class
+name | string | 20 | ASCII-only display name of the player, null-terminated
+**TOTAL** | | 23 | 
 
 ### `UpdatePlayer: bytes`
 
@@ -68,6 +53,23 @@ flags | int | 1 | 0: alive, 1: boosting
 
 If the client does not receive a datagram for a player with id `id`, then it is safe to delete that player from the registry.
 
+### `InitialPayload: JSON`
+
+Name | Type | Description 
+-----|------|-------------
+version | string | server version
+players | InitialPlayer[] | all players currently on
+
+### `UpdatePayload: bytes`
+
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+new_player_count | int | 1 | how many new players there are
+new_players | InitialPlayer[] | new_player_count * size | the new players
+player_count | int | 2 | how many players there are (incl. new)
+players | UpdatePlayer[] | player_count * size | the players (incl. new)
+**TOTAL** | | **VARIABLE** | 
+
 ## Client -> Server Types
 
 ### `BecomePlayer: JSON`
@@ -75,7 +77,7 @@ If the client does not receive a datagram for a player with id `id`, then it is 
 Name | Type | Description 
 -----|------|-------------
 name | string | player display name
-player_class | int (enumerated) | the player class (i.e. snowplow, other types)
+player_class | int | the enumerated player class (i.e. snowplow, other types)
 
 ### `Input: bytes`
 
