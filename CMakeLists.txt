@@ -23,10 +23,11 @@ set(SOURCES
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/Arena.cpp
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/Player.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/client/Client.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/client/ClientSource.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/event/Event.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/server/Server.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/websocket/WebSocketClient.cpp 
-       ${PROJECT_SOURCE_DIR}/src/snowplowderby/websocket/WebSocketListener.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/websocket/WebSocketClientSource.cpp 
 )
 
 file(GLOB_RECURSE BOX2D_LIB

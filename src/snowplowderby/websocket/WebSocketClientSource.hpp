@@ -6,13 +6,14 @@
 #include <memory>
 
 #include "WebSocketClient.hpp"
+#include "snowplowderby/client/ClientSource.hpp"
 #include "util/log.hpp"
 
 using namespace websocketpp;
 typedef websocketpp::server<websocketpp::config::asio> WSPPServer;
 
 namespace snowplowderby::websocket {
-    class WebSocketListener {
+    class WebSocketClientSource : public snowplowderby::client::ClientSource {
     private:
         static util::Logger logger;
         WSPPServer server;
@@ -21,8 +22,8 @@ namespace snowplowderby::websocket {
 
         void set_up_handlers();
     public:
-        WebSocketListener(int port);
-        ~WebSocketListener();
+        WebSocketClientSource(int port);
+        ~WebSocketClientSource();
 
         void begin();
     };

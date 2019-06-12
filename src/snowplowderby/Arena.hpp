@@ -27,4 +27,5 @@ namespace snowplowderby {
             void update();
     };
 
+    typedef std::shared_ptr<Arena> ArenaPtr;
 }
