@@ -1,20 +1,20 @@
 import { Scene } from "phaser";
 import { Player } from "game/player.js";
+import { GameServer } from 'game/GameServer.js';
+
+const $ = require('jquery');
+
 
 export class GameScene extends Scene {
     constructor() {
         super('GameScene');
-        this.socket = null;
+        this.server = null;
     }
     connectToServer() {
         const self = this;
         $.get("/data/server-info", (data) => {
             console.info("Received server info", data);
-            self.socket = new WebSocket(data.url);
-            self.socket.onopen = () => {
-                console.info("Socket opened");
-            };
-            self.socket.onmessage = self.onmessage;
+            self.server = new GameServer(data.url);
         });
     }
     onSocketMessage(data) {
@@ -25,6 +25,7 @@ export class GameScene extends Scene {
         const currentUrl = window.location;
         var baseUrl = currentUrl.protocol + "//" + currentUrl.host + "/" + currentUrl.pathname.split('/')[1];
         console.info("Base URL set to ", baseUrl);
+        this.connectToServer();
         this.load.setBaseURL(baseUrl);
         this.load.image("truck", "static/images/truck.png");
     }
