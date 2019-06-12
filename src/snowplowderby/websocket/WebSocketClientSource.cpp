@@ -19,7 +19,7 @@ WebSocketClientSource::~WebSocketClientSource() {
 }
 
 void WebSocketClientSource::begin() {
-    LOG_INFO(logger) << "Beginning websocket listener";
+    LOG_INFO(logger) << "Beginning";
     server.init_asio();
     set_up_handlers();
     server.listen(port);

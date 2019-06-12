@@ -27,8 +27,8 @@ public:
 };
 
 Arena::Arena() : phys_world(b2Vec2_zero) {
-    ContactListener contact_listener(this);
-    phys_world.SetContactListener(&contact_listener);
+    ContactListener* contact_listener = new ContactListener(this);
+    phys_world.SetContactListener(contact_listener);
 }
 
 Player* Arena::create_player() {
