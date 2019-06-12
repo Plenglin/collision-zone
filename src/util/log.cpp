@@ -18,15 +18,13 @@ void util::initialize_logging() {
         keywords::file_name = "log/%Y-%m-%d_%H-%M-%S_%4N.log",
         keywords::rotation_size = 10 * 1024 * 1024,
         keywords::format = "%TimeStamp% [%" LOGGING_TAG_ATTR_NAME "%] (%Severity%) %Message%",
-        keywords::auto_flush = true
-    );
-    file_sink->set_filter(trivial::severity >= trivial::trace);
+        keywords::auto_flush = true);
+    file_sink->set_filter(trivial::severity >= trivial::debug);
 
     auto console_sink = logging::add_console_log(
-        std::cout, 
-        keywords::format = "[%" LOGGING_TAG_ATTR_NAME "%] (%Severity%) %Message%"
-    );
-    console_sink->set_filter(trivial::severity >= trivial::debug);
+        std::cout,
+        keywords::format = "[%" LOGGING_TAG_ATTR_NAME "%] (%Severity%) %Message%");
+    console_sink->set_filter(trivial::severity >= trivial::info);
 }
 
 util::Logger util::get_logger(std::string tag) {
