@@ -8,7 +8,7 @@
 namespace snowplowderby::client {
     
     class ClientSource {
-    private:
+    protected:
         ArenaPtr arena;
     public:
         ClientSource();

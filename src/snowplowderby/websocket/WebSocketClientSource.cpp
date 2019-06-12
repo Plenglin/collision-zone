@@ -41,7 +41,12 @@ void WebSocketClientSource::set_up_handlers() {
 }
 
 void WebSocketClientSource::update() {
-    
+    LOG_DEBUG(logger) << "Sending update packets to clients";
+    std::stringstream serialized;
+    arena->write_update_bytes(serialized);
+    for (auto it = clients.begin(); it != clients.end(); it++) {
+        (*it)->send_binary(serialized.str());
+    }
 }
 
 std::string WebSocketClientSource::get_name() {

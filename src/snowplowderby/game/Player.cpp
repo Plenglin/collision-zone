@@ -26,7 +26,8 @@ bool Player::is_boosting() {
 }
 
 void Player::write_initial_bytes(std::ostream& os) {
-    os << get_id() << get_car_class();
+    os.write(reinterpret_cast<const char*>(&id), 2);
+    os.write(reinterpret_cast<const char*>(&car_class), 1);
     for (int i = 0; i < PLAYER_NAME_LENGTH_LIMIT; i++) {
         os << name[i];
     }
@@ -35,6 +36,7 @@ void Player::write_initial_bytes(std::ostream& os) {
 void Player::write_update_bytes(std::ostream& os) {
     auto pos = body->GetPosition();
     auto vel = body->GetLinearVelocity();
+    auto angle = body->GetAngle();
     char flags = 0;
     if (is_alive()) {
         flags |= PLAYER_ALIVE_FLAG;
@@ -42,6 +44,11 @@ void Player::write_update_bytes(std::ostream& os) {
     if (is_boosting()) {
         flags |= PLAYER_BOOSTING_FLAG;
     }
-    
-    os << get_id() << pos.x << pos.y << body->GetAngle() << vel.x << vel.y << flags;
+    os.write(reinterpret_cast<const char*>(&id), 2);
+    os.write(reinterpret_cast<const char*>(&pos.x), 4);
+    os.write(reinterpret_cast<const char*>(&pos.y), 4);
+    os.write(reinterpret_cast<const char*>(&angle), 4);
+    os.write(reinterpret_cast<const char*>(&vel.x), 2);
+    os.write(reinterpret_cast<const char*>(&vel.y), 2);
+    os.write(reinterpret_cast<const char*>(&flags), 2);
 }
