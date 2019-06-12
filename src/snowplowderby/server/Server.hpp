@@ -1,3 +1,6 @@
+#pragma once
+#include <memory>
+
 
 namespace snowplowderby::server {
     class Server {
