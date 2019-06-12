@@ -12,8 +12,11 @@ Client::Client() : state(UNINITIALIZED) {
 Client::~Client() {
 }
 
-void Client::attach(ArenaPtr arena, Player* player) {
+void Client::attach(ArenaPtr arena) {
     this->arena = arena;
+}
+
+void Client::attach(PlayerPtr player) {
     this->player = player;
 }
 

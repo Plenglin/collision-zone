@@ -17,8 +17,3 @@ WebSocketClient::WebSocketClient(std::shared_ptr<WSPPConnection> connection) : c
 WebSocketClient::~WebSocketClient() {
     
 }
-
-void WebSocketClient::send_periodic_update() {
-    //message_buffer::
-    //connection->send()
-}

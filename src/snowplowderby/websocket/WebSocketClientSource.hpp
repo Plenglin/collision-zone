@@ -26,6 +26,7 @@ namespace snowplowderby::websocket {
         ~WebSocketClientSource();
 
         void begin();
+        void update() override;
     };
 
 }

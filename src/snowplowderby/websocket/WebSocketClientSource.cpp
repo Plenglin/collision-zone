@@ -35,3 +35,7 @@ void WebSocketClientSource::set_up_handlers() {
         clients.push_back(client);
     });
 }
+
+void WebSocketClientSource::update() {
+    
+}

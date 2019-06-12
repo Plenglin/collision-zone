@@ -5,6 +5,7 @@
 #include "util/log.hpp"
 #include <mutex>
 #include <queue>
+#include <memory>
 
 namespace snowplowderby::client {
 
@@ -19,7 +20,7 @@ namespace snowplowderby::client {
         static util::Logger logger;
     protected:
         ArenaPtr arena;
-        Player* player;
+        PlayerPtr player;
         std::mutex input_queue_lock;
         std::queue<void*> input_queue;
         ClientState state;
@@ -28,8 +29,10 @@ namespace snowplowderby::client {
         ~Client();
 
         ClientState get_state();
-        void attach(ArenaPtr arena, Player* player);
-        virtual void send_periodic_update() = 0;
+        void attach(ArenaPtr arena);
+        void attach(PlayerPtr player);
     };
+
+    typedef std::shared_ptr<Client> ClientPtr;
 
 }
