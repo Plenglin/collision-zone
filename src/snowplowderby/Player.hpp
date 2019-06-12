@@ -3,6 +3,8 @@
 #include <Box2D/Box2D.h>
 #include "util/physics.hpp"
 #include <list>
+#include <memory>
+#include <ostream>
 
 #include "snowplowderby/io/s2c.hpp"
 
@@ -18,6 +20,7 @@ namespace snowplowderby {
         bool alive = true;
 
         util::UserDataWrapper user_data;
+        std::string name;
     public:
         Player(short id, b2Body* body);
 
@@ -26,7 +29,22 @@ namespace snowplowderby {
         bool is_boosting();
 
         util::UserDataWrapper* get_user_data();
-        io::s2c::Player serialize();
+
+        void write_update_bytes(std::ostream& os);
+
+        template <typename Writer>
+        void serialize_initial(Writer& writer) const {
+            writer.StartObject();
+
+            writer.String("id");
+            writer.Int(id);
+
+            writer.String("name");
+            writer.String(name);
+
+            writer.EndObject();
+        }
     };
 
+    typedef std::shared_ptr<Player> PlayerPtr;
 }

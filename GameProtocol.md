@@ -27,10 +27,6 @@ A client can be a PLAYER or a SPECTATOR.
 1. Server -> Client *: `InitialPlayer`
     - The player name can be modified in the event of a duplicate
 
-### PLAYER dies
-
-0. 
-
 ## Server -> Client Types
 
 ### `InitialPlayer: JSON`
@@ -57,16 +53,20 @@ player_count | int | 2 | how many players there are
 players | InitialPlayer[] | player_count * size | the players
 **TOTAL** | | **VARIABLE** | 
 
-### `BytePlayer: bytes`
+### `UpdatePlayer: bytes`
 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
 id    | int | 2 | the id of the player 
-x     | float | 4 | player positional data 
-y     | float | 4 | player positional data 
-angle | float | 4 | player positional data 
+x     | float | 4 | player positional data
+y     | float | 4 | player positional data
+angle | float | 4 | player rotational data
+vx    | float | 4 | player velocity data (help with interpolation)
+vy    | float | 4 | player velocity data (help with interpolation)
 flags | int | 1 | 0: alive, 1: boosting
 **TOTAL** | | **16** | 
+
+If the client does not receive a datagram for a player with id `id`, then it is safe to delete that player from the registry.
 
 ## Client -> Server Types
 

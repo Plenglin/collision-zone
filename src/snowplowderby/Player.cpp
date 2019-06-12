@@ -21,8 +21,9 @@ bool Player::is_boosting() {
     return false;
 }
 
-io::s2c::Player Player::serialize() {
+void Player::write_update_bytes(std::ostream& os) {
     auto pos = body->GetPosition();
+    auto vel = body->GetLinearVelocity();
     char flags = 0;
     if (is_alive()) {
         flags |= PLAYER_ALIVE_FLAG;
@@ -30,11 +31,6 @@ io::s2c::Player Player::serialize() {
     if (is_boosting()) {
         flags |= PLAYER_BOOSTING_FLAG;
     }
-    return io::s2c::Player{
-        get_id(),
-        pos.x,
-        pos.y,
-        body->GetAngle(),
-        flags
-    };
+    
+    os << id << pos.x << pos.y << body->GetAngle() << vel.x << vel.y << flags;
 }
