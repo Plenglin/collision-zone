@@ -21,7 +21,6 @@ namespace snowplowderby::websocket {
     public:
         WebSocketClient(std::shared_ptr<WSPPConnection> connection);
         ~WebSocketClient();
-        void send_periodic_update() override;
     };
 
 }

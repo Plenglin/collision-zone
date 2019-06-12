@@ -12,6 +12,9 @@ namespace snowplowderby::client {
     public:
         ClientSource();
         void set_arena(ArenaPtr arena);
+        virtual void update() = 0;
     };
+
+    typedef std::shared_ptr<ClientSource> ClientSourcePtr;
 
 }

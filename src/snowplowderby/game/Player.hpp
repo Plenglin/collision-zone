@@ -1,15 +1,18 @@
 #pragma once
 
-#include <Box2D/Box2D.h>
-#include "util/physics.hpp"
 #include <list>
 #include <memory>
 #include <ostream>
 
-#include "snowplowderby/io/s2c.hpp"
+#include <Box2D/Box2D.h>
+
+#include "util/physics.hpp"
+
 
 #define USERDATA_TYPE_PLAYER 13498931
 #define PLAYER_NAME_LENGTH_LIMIT 20
+#define PLAYER_ALIVE_FLAG 1
+#define PLAYER_BOOSTING_FLAG 2
 
 namespace snowplowderby {
 
@@ -35,7 +38,6 @@ namespace snowplowderby {
 
         void write_update_bytes(std::ostream& os);
         void write_initial_bytes(std::ostream& os);
-
     };
 
     typedef std::shared_ptr<Player> PlayerPtr;

@@ -9,7 +9,7 @@
 #include "Player.hpp"
 #include "util/log.hpp"
 
-#define TIME_STEP 0.05
+#define UPDATE_PERIOD 50  // Milliseconds
 
 namespace snowplowderby {
 
@@ -17,15 +17,15 @@ namespace snowplowderby {
         private:
             static util::Logger logger;
             b2World phys_world;
-            std::unordered_map<short, Player*> players;
+            std::unordered_map<short, PlayerPtr> players;
             std::list<PlayerPtr> new_players;
             short next_player_id = 0;
         public:
             Arena();
             ~Arena();
 
-            Player* create_player();
-            void destroy_player(Player* player);
+            PlayerPtr create_player();
+            void destroy_player(PlayerPtr player);
 
             void update();
 

@@ -32,7 +32,7 @@ Arena::Arena() : phys_world(b2Vec2_zero) {
     phys_world.SetContactListener(contact_listener);
 }
 
-Player* Arena::create_player() {
+PlayerPtr Arena::create_player() {
     LOG_INFO(logger) << "Creating player";
 
     b2BodyDef body_def;
@@ -45,27 +45,25 @@ Player* Arena::create_player() {
     fixture_def.shape = &box;
     body->CreateFixture(&fixture_def);
 
-    Player* player = new Player(next_player_id++, body);
+    PlayerPtr player(new Player(next_player_id++, body));
     body->SetUserData(player->get_user_data());
 
-    players.insert(std::make_pair(player->get_id(), player));
+    players[player->get_id()] = player;
 
     return player;
 }
 
-void Arena::destroy_player(Player* player) {
+void Arena::destroy_player(PlayerPtr player) {
 
 }
 
 Arena::~Arena() {
-    for (auto it = players.begin(); it != players.end(); it++) {
-        delete it->second;
-    }
+    
 }
 
 void Arena::update() {
     LOG_TRACE(logger) << "Updating arena";
-    phys_world.Step(TIME_STEP, 6, 2);
+    phys_world.Step(UPDATE_PERIOD / 1000., 6, 2);
 }
 
 void Arena::write_initial_bytes(std::ostream& os) {
