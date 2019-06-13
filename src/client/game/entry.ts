@@ -1,4 +1,4 @@
-import { GameScene } from 'client/game/GameScene';
+import { GameScene } from 'client/game/GameScene'
 
 const PHASER_CONFIG = {
     type: Phaser.AUTO,
@@ -8,6 +8,6 @@ const PHASER_CONFIG = {
         resizeInterval: 500
     },
     scene: GameScene
-};
+}
 
-const phaser = new Phaser.Game(PHASER_CONFIG);
+const phaser = new Phaser.Game(PHASER_CONFIG)
