@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import { Player } from "game/player.js";
-import { GameServer } from 'game/GameServer.js';
+import { Client } from 'game/Client.js';
 
 const $ = require('jquery');
 
@@ -14,7 +14,7 @@ export class GameScene extends Scene {
         const self = this;
         $.get("/data/server-info", (data) => {
             console.info("Received server info", data);
-            self.server = new GameServer(data.url);
+            self.server = new Client(data.url);
         });
     }
     preload() {
