@@ -35,7 +35,7 @@ export class GameScene extends Scene {
         console.info("GAME PHASE: Create")
         const cam = this.cameras.main;
         cam.centerOn(0, 0);
-        cam.zoom = 2;
+        cam.zoom = 4;
     }
     update() {
     }
