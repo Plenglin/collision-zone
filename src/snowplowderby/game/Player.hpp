@@ -25,7 +25,7 @@ namespace snowplowderby {
         bool alive = true;
 
         util::UserDataWrapper user_data;
-        char name[PLAYER_NAME_LENGTH_LIMIT] = {0};
+        std::string name;
     public:
         Player(short id, b2Body* body);
 
@@ -36,6 +36,7 @@ namespace snowplowderby {
 
         util::UserDataWrapper* get_user_data();
 
+        void write_creation_event(std::ostream& os);
         void write_update_bytes(std::ostream& os);
         void write_initial_bytes(std::ostream& os);
     };
