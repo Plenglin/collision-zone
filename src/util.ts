@@ -3,10 +3,12 @@ const decoder = new TextDecoder("utf-8");
 export class ByteArrayInputStream {
     byteView: Uint8Array
     array: ArrayBuffer
+    view: DataView
     i = 0
     constructor(array: ArrayBuffer) {
         this.array = array
         this.byteView = new Uint8Array(array);
+        this.view = new DataView(this.array);
     }
 
     readByte() {
@@ -18,8 +20,7 @@ export class ByteArrayInputStream {
     }
 
     readFloat() {
-        const floatBuf = new DataView(this.array, this.i);
-        const out = floatBuf.getFloat32(0, false);
+        const out = this.view.getFloat32(this.i, true);
         this.i += 4;
         return out;
     }
@@ -30,6 +31,7 @@ export class ByteArrayInputStream {
             this.i++;
         }
         const array = new Uint8Array(this.array, start, this.i - start);
+        this.i++;
         return decoder.decode(array);
     }
 }
