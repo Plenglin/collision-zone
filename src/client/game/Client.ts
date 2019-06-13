@@ -1,6 +1,7 @@
 import { Arena } from "client/game/Arena";
 import { ByteArrayInputStream } from "../../util";
 import { Player } from "./Player";
+import { Wall } from "./Wall";
 
 enum ClientState {
     UNINITIALIZED, SPECTATING, PLAYING
@@ -35,15 +36,15 @@ export class Client {
         console.info("Received initialization message", data)
         this.state = ClientState.SPECTATING;
 
-        const bytes = new Uint8Array(data, 1, data.byteLength - 1); // skip u/r
-        const stream = new ByteArrayInputStream(bytes);
+        const stream = new ByteArrayInputStream(data);
+        stream.readByte();  // clear u/r
 
         const version = stream.readStringUntilNull();
         console.log(version);
-        const playerCount = stream.readShort();
-        console.log(playerCount);
-        for (var i = 0; i < playerCount; i++) {
-            //this.arena.players.push(new Player())
+        const wallCount = stream.readShort();
+        console.log(wallCount);
+        for (var i = 0; i < wallCount; i++) {
+            console.log(Wall.readFromStream(stream));
         }
     }
 
