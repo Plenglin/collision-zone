@@ -15,7 +15,6 @@ export class Wall extends GameObjects.Rectangle {
         const w = stream.readFloat()
         const h = stream.readFloat()
         const a = stream.readFloat()
-        console.debug(x, y, w, h, a)
         return new Wall(scene, x, y, w, h, a)
     }
 }

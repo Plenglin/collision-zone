@@ -1,22 +1,23 @@
 const decoder = new TextDecoder("utf-8");
 
 export class ByteArrayInputStream {
-    byteView: Uint8Array
     array: ArrayBuffer
     view: DataView
-    i = 0
+    i: integer
     constructor(array: ArrayBuffer) {
+        this.i = 0
         this.array = array
-        this.byteView = new Uint8Array(array);
         this.view = new DataView(this.array);
     }
 
     readByte() {
-        return this.byteView[this.i++];
+        return this.view.getUint8(this.i++);
     }
 
     readShort() {
-        return (this.readByte() << 2) | this.readByte();
+        const out = this.view.getUint16(this.i, true);
+        this.i += 2;
+        return out;
     }
 
     readFloat() {
@@ -27,7 +28,7 @@ export class ByteArrayInputStream {
 
     readStringUntilNull() {
         const start = this.i;
-        while (this.byteView[this.i] != 0) {
+        while (this.view.getUint8(this.i) != 0) {
             this.i++;
         }
         const array = new Uint8Array(this.array, start, this.i - start);

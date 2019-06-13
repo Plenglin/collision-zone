@@ -26,14 +26,13 @@ export class Client {
     async onMessage(data: MessageEvent) {
         const arrayBuffer = await new Response(data.data).arrayBuffer()
         if (this.state == ClientState.UNINITIALIZED) {
-            console.debug(arrayBuffer);
             this.onInitializationMessage(arrayBuffer)
             return
         }
     }
 
     onInitializationMessage(data: ArrayBuffer) {
-        console.info("Received initialization message", data)
+        console.debug("Received initialization message", data)
         this.state = ClientState.SPECTATING;
 
         const stream = new ByteArrayInputStream(data);
@@ -43,7 +42,7 @@ export class Client {
         console.info("Server version ", version)
 
         const wallCount = stream.readShort();
-        console.info("Reading", wallCount, "walls")
+        console.debug("Reading", wallCount, "walls")
         for (var i = 0; i < wallCount; i++) {
             const wall = Wall.readFromStream(this.scene, stream)
             this.scene.addWall(wall)
