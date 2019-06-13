@@ -3,13 +3,17 @@ import { Player } from "client/game/Player"
 import { Client } from 'client/game/Client'
 
 import * as $ from "jquery"
+import { Arena } from "./Arena";
 
 
 export class GameScene extends Scene {
     server: Client
+    arena: Arena
+
     constructor() {
         super('GameScene')
         this.server = null
+        this.arena = new Arena();
     }
     connectToServer() {
         const self = this
