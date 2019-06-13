@@ -1,4 +1,4 @@
-import { GameObjects, Scene } from "phaser"
+import { GameObjects, Scene, Game } from "phaser"
 
 const ALIVE_FLAG = 1
 const BOOSTING_FLAG = 2

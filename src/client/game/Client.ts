@@ -1,5 +1,6 @@
 import { Arena } from "client/game/Arena";
 import { ByteArrayInputStream } from "../../util";
+import { Player } from "./Player";
 
 enum ClientState {
     UNINITIALIZED, SPECTATING, PLAYING
@@ -37,9 +38,13 @@ export class Client {
         const bytes = new Uint8Array(data, 1, data.byteLength - 1); // skip u/r
         const stream = new ByteArrayInputStream(bytes);
 
-        // TODO: handle version
+        const version = stream.readStringUntilNull();
+        console.log(version);
         const playerCount = stream.readShort();
         console.log(playerCount);
+        for (var i = 0; i < playerCount; i++) {
+            //this.arena.players.push(new Player())
+        }
     }
 
 }

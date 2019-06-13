@@ -1,3 +1,5 @@
+const decoder = new TextDecoder("utf-8");
+
 export class ByteArrayInputStream {
     array: Uint8Array
     floatBuf: Float32Array
@@ -20,5 +22,14 @@ export class ByteArrayInputStream {
         const out = this.floatBuf[0];
         this.i += 4;
         return out;
+    }
+
+    readStringUntilNull() {
+        const start = this.i;
+        while (this.array[this.i] != 0) {
+            this.i++;
+        }
+        const array = new Uint8Array(this.array, start, this.i - start);
+        return decoder.decode(array);
     }
 }

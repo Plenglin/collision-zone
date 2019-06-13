@@ -13,7 +13,11 @@
             "script": "webpack",
             "problemMatcher": [
                 "$eslint-stylish"
-            ]
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }
