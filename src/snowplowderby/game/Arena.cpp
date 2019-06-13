@@ -1,6 +1,8 @@
 #include "Arena.hpp"
 
 #include <Box2D/Box2D.h>
+#include <random>
+#include <ctgmath>
 
 #include "Player.hpp"
 
@@ -8,6 +10,8 @@ using namespace snowplowderby::game;
 
 
 util::Logger Arena::logger = util::get_logger("SPD-Arena");
+std::default_random_engine Arena::random;
+std::uniform_real_distribution<float> Arena::distribution(0.0, 1.0);
 
 class ContactListener : public b2ContactListener {
 private:
@@ -30,6 +34,26 @@ public:
 Arena::Arena() : phys_world(b2Vec2_zero) {
     ContactListener* contact_listener = new ContactListener(this);
     phys_world.SetContactListener(contact_listener);
+
+    for (int i = 0; i < 50; i++) {
+        create_random_wall();
+    }
+}
+
+void Arena::create_random_wall() {
+    float theta = distribution(random) * M_PI;
+    float r = 50 * std::sqrt(distribution(random));
+
+    float x = r * std::cos(theta);
+    float y = r * std::cos(theta);
+    float w = 3 * distribution(random);
+    float h = 5 * distribution(random);
+    float a = distribution(random) * M_PI;
+    Wall wall = {x, y, w, h, a};
+
+    wall.create_body(&phys_world);
+
+    walls.push_back(wall);
 }
 
 PlayerPtr Arena::create_player() {
