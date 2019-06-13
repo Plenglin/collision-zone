@@ -1,7 +1,7 @@
-import { Arena } from "client/game/Arena";
 import { ByteArrayInputStream } from "../../util";
 import { Player } from "./Player";
 import { Wall } from "./Wall";
+import { GameScene } from "./GameScene";
 
 enum ClientState {
     UNINITIALIZED, SPECTATING, PLAYING
@@ -11,8 +11,8 @@ export class Client {
     url: string
     socket: WebSocket
     state: ClientState
-    arena: Arena
-    constructor(url: string) {
+    
+    constructor(url: string, private scene: GameScene) {
         this.url = url
         this.socket = new WebSocket(url)
         this.socket.onopen = () => {
@@ -24,9 +24,9 @@ export class Client {
     }
 
     async onMessage(data: MessageEvent) {
-        console.debug("Received message", data)
         const arrayBuffer = await new Response(data.data).arrayBuffer()
         if (this.state == ClientState.UNINITIALIZED) {
+            console.debug(arrayBuffer);
             this.onInitializationMessage(arrayBuffer)
             return
         }
@@ -40,12 +40,15 @@ export class Client {
         stream.readByte();  // clear u/r
 
         const version = stream.readStringUntilNull();
-        console.log(version);
+        console.info("Server version ", version)
+
         const wallCount = stream.readShort();
-        console.log(wallCount);
+        console.info("Reading", wallCount, "walls")
         for (var i = 0; i < wallCount; i++) {
-            console.log(Wall.readFromStream(stream));
+            const wall = Wall.readFromStream(this.scene, stream)
+            this.scene.addWall(wall)
         }
+        // player init
     }
 
 }
