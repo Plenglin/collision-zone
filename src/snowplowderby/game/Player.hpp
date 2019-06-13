@@ -14,7 +14,7 @@
 #define PLAYER_ALIVE_FLAG 1
 #define PLAYER_BOOSTING_FLAG 2
 
-namespace snowplowderby {
+namespace snowplowderby::game {
 
     class Player {
     private:

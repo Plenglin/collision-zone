@@ -4,7 +4,7 @@
 
 #include "Player.hpp"
 
-using namespace snowplowderby;
+using namespace snowplowderby::game;
 
 
 util::Logger Arena::logger = util::get_logger("SPD-Arena");

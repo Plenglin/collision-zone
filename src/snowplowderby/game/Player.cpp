@@ -2,7 +2,7 @@
 
 #include "util/util.hpp"
 
-using namespace snowplowderby;
+using namespace snowplowderby::game;
 
 Player::Player(short id, b2Body* body) : id(id), body(body), user_data{USERDATA_TYPE_PLAYER, this} {
 }

@@ -26,6 +26,7 @@ set(SOURCES
        ${PROJECT_SOURCE_DIR}/src/util/physics.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/game/Arena.cpp
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/game/Player.cpp 
+       ${PROJECT_SOURCE_DIR}/src/snowplowderby/game/Wall.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/client/Client.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/client/ClientSource.cpp 
        ${PROJECT_SOURCE_DIR}/src/snowplowderby/event/Event.cpp 

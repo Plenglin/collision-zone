@@ -11,7 +11,7 @@
 
 #define UPDATE_PERIOD 50  // Milliseconds
 
-namespace snowplowderby {
+namespace snowplowderby::game {
 
     class Arena {
         private:

@@ -1,6 +1,7 @@
 #include "Client.hpp"
 
 
+using namespace snowplowderby::game;
 using namespace snowplowderby::client;
 using namespace boost::log::trivial;
 
