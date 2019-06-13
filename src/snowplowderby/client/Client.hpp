@@ -7,9 +7,10 @@
 #include <queue>
 #include <memory>
 
-namespace snowplowderby::client {
+using namespace snowplowderby;
+using namespace snowplowderby::game;
 
-    using namespace snowplowderby;
+namespace snowplowderby::client {
 
     enum ClientState {
         UNINITIALIZED, SPECTATING, PLAYING

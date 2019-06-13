@@ -5,6 +5,8 @@
 
 #include "snowplowderby/game/Arena.hpp"
 
+using namespace snowplowderby::game;
+
 namespace snowplowderby::client {
     
     class ClientSource {
