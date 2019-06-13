@@ -37,15 +37,19 @@ void WebSocketClientSource::set_up_handlers() {
         auto conn = server.get_con_from_hdl(handle);
         std::shared_ptr<WebSocketClient> client(new WebSocketClient(conn));
         clients.push_back(client);
+
+        std::stringstream serialized_arena;
+        arena->write_initial_bytes(serialized_arena);
+        client->send_binary_reliable(serialized_arena.str());
     });
 }
 
 void WebSocketClientSource::update() {
     LOG_TRACE(logger) << "Sending update packets to clients";
-    std::stringstream serialized;
-    arena->write_update_bytes(serialized);
+    std::stringstream serialized_arena;
+    arena->write_update_bytes(serialized_arena);
     for (auto it = clients.begin(); it != clients.end(); it++) {
-        (*it)->send_binary(serialized.str());
+        (*it)->send_binary_unreliable(serialized_arena.str());
     }
 }
 

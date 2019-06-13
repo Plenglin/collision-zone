@@ -20,6 +20,10 @@ WebSocketClient::~WebSocketClient() {
     
 }
 
-void WebSocketClient::send_binary(std::string data) {
-    connection->send(data, frame::opcode::binary);
+void WebSocketClient::send_binary_unreliable(std::string data) {
+    connection->send("u" + data, frame::opcode::binary);
+}
+
+void WebSocketClient::send_binary_reliable(std::string data) {
+    connection->send("r" + data, frame::opcode::binary);
 }
