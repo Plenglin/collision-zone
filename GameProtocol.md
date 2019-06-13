@@ -14,29 +14,20 @@ A client can be a PLAYER or a SPECTATOR.
 ### Initial Connection
 
 0. Client A connects to the server via Websocket, UDP, etc.
-1. Server -> Client A: `InitialPayload`
+1. Server -> Client A, reliable: `InitialPayload`
 2. Client A is put into SPECTATOR mode
 
 ### Periodic Update
 
-0. Server -> Client *: `UpdatePayload`
+0. Server -> Client *, unreliable: `UpdatePayload`
 
 ### SPECTATOR wants to become PLAYER
 
-0. Client A -> Server: `BecomePlayer`
-1. Server -> Client *: `InitialPlayer`
+0. Client A -> Server, reliable: `BecomePlayer`
+1. Server -> Client *, reliable: `InitialPlayer`
     - The player name can be modified in the event of a duplicate
 
 ## Server -> Client Types
-
-### `InitialPlayer: bytes`
-
-Name | Type | Size (bytes) | Description 
------|------|--------------|------------
-id | int | 2 | the id of the player
-player_class | int | 1 | the enumerated player class
-name | string | 20 | ASCII-only display name of the player, null-terminated
-**TOTAL** | | 23 | 
 
 ### `UpdatePlayer: bytes`
 
@@ -49,26 +40,43 @@ angle | float | 4 | player rotational data
 vx    | float | 4 | player velocity data (help with interpolation)
 vy    | float | 4 | player velocity data (help with interpolation)
 flags | int | 1 | 0: alive, 1: boosting
-**TOTAL** | | **16** | 
+**TOTAL** | | **23** | 
+
+### `InitialPlayer: bytes`
+
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+UpdatePlayer | UpdatePlayer | 23 | include the rest of UpdatePlayer
+player_class | int | 1 | the enumerated player class
+name | string | ? | null-terminated display name of the player
+**TOTAL** | | **?** | 
 
 If the client does not receive a datagram for a player with id `id`, then it is safe to delete that player from the registry.
 
-### `InitialPayload: JSON`
+### `InitialPayload: bytes`
 
-Name | Type | Description 
------|------|-------------
-version | string | server version
-players | InitialPlayer[] | all players currently on
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+version | string | ? | null-terminated server version
+player_count | int | 2 | number of players
+players | InitialPlayer[] | ? | all players currently on
+**TOTAL** | | **?** | 
 
 ### `UpdatePayload: bytes`
 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
-new_player_count | int | 1 | how many new players there are
-new_players | InitialPlayer[] | new_player_count * size | the new players
-player_count | int | 2 | how many players there are (incl. new)
-players | UpdatePlayer[] | player_count * size | the players (incl. new)
-**TOTAL** | | **VARIABLE** | 
+player_count | int | 2 | how many players there are
+players | UpdatePlayer[] | player_count * size | the players
+**TOTAL** | | **?** | 
+
+### `PlayerCreatedEvent: bytes`
+
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+event_type | int | 1 | the number `32`, for identifying the event type
+players | InitialPlayer | ? | the player
+**TOTAL** | | **?** | 
 
 ## Client -> Server Types
 

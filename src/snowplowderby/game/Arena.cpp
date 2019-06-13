@@ -33,8 +33,6 @@ Arena::Arena() : phys_world(b2Vec2_zero) {
 }
 
 PlayerPtr Arena::create_player() {
-    LOG_INFO(logger) << "Creating player";
-
     b2BodyDef body_def;
     body_def.position.Set(0.0, 0.0);
     b2Body* body = phys_world.CreateBody(&body_def);
@@ -45,11 +43,13 @@ PlayerPtr Arena::create_player() {
     fixture_def.shape = &box;
     body->CreateFixture(&fixture_def);
 
-    PlayerPtr player(new Player(next_player_id++, body));
+    short id = next_player_id++;
+    PlayerPtr player(new Player(id, body));
     body->SetUserData(player->get_user_data());
 
-    players[player->get_id()] = player;
+    players[id] = player;
 
+    LOG_INFO(logger) << "Created player with id " << id;
     return player;
 }
 
@@ -67,7 +67,11 @@ void Arena::update() {
 }
 
 void Arena::write_initial_bytes(std::ostream& os) {
-    
+    unsigned short player_count = players.size();
+    os.write(reinterpret_cast<const char*>(&player_count), 2);
+    for (auto it = players.begin(); it != players.end(); it++) {
+        it->second->write_initial_bytes(os);
+    }
 }
 
 void Arena::write_update_bytes(std::ostream& os) {

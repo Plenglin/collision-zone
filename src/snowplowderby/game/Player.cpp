@@ -25,12 +25,20 @@ bool Player::is_boosting() {
     return false;
 }
 
+void Player::write_creation_event(std::ostream& os) {
+    char event_type = 32;
+    os.write(&event_type, 2);
+    write_initial_bytes(os);
+}
+
 void Player::write_initial_bytes(std::ostream& os) {
+    write_update_bytes(os);
+
+    char terminator = 0;
     os.write(reinterpret_cast<const char*>(&id), 2);
-    os.write(reinterpret_cast<const char*>(&car_class), 1);
-    for (int i = 0; i < PLAYER_NAME_LENGTH_LIMIT; i++) {
-        os << name[i];
-    }
+    os.write(&car_class, 1);
+    os << name;
+    os.write(&terminator, 1);
 }
 
 void Player::write_update_bytes(std::ostream& os) {
@@ -50,5 +58,5 @@ void Player::write_update_bytes(std::ostream& os) {
     os.write(reinterpret_cast<const char*>(&angle), 4);
     os.write(reinterpret_cast<const char*>(&vel.x), 2);
     os.write(reinterpret_cast<const char*>(&vel.y), 2);
-    os.write(reinterpret_cast<const char*>(&flags), 2);
+    os.write(&flags, 2);
 }

@@ -10,6 +10,7 @@
 
 #include "util/log.hpp"
 
+
 using namespace snowplowderby;
 using namespace snowplowderby::client;
 
