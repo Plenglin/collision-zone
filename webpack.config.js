@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
     mode: 'development',
@@ -10,7 +10,7 @@ module.exports = {
         ]
     },
     entry: {
-        game: './src/client/game/main.ts'
+        game: './src/client/game/entry.ts'
     },
     devtool: 'inline-source-map',
     module: {
@@ -24,4 +24,4 @@ module.exports = {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/scripts')
     }
-};
+}
