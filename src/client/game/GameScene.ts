@@ -1,18 +1,19 @@
 import { Scene } from "phaser";
-import { Player } from "game/player.js";
-import { Client } from 'game/Client.js';
+import { Player } from "client/game/Player";
+import { Client } from 'client/game/Client';
 
-const $ = require('jquery');
+import * as $ from "jquery";
 
 
 export class GameScene extends Scene {
+    server: Client
     constructor() {
         super('GameScene');
         this.server = null;
     }
     connectToServer() {
         const self = this;
-        $.get("/data/server-info", (data) => {
+        $.get("/data/server-info", (data: any) => {
             console.info("Received server info", data);
             self.server = new Client(data.url);
         });
