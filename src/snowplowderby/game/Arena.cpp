@@ -12,6 +12,7 @@ using namespace snowplowderby::game;
 util::Logger Arena::logger = util::get_logger("SPD-Arena");
 std::default_random_engine Arena::random;
 std::uniform_real_distribution<float> Arena::distribution(0.0, 1.0);
+std::uniform_real_distribution<float> Arena::wall_pos_distribution(-50, 50);
 
 class ContactListener : public b2ContactListener {
 private:
@@ -41,18 +42,15 @@ Arena::Arena() : phys_world(b2Vec2_zero) {
 }
 
 void Arena::create_random_wall() {
-    float theta = distribution(random) * M_PI;
-    float r = 50 * std::sqrt(distribution(random));
-
-    float x = r * std::cos(theta);
-    float y = r * std::cos(theta);
+    float x = wall_pos_distribution(random);
+    float y = wall_pos_distribution(random);
     float w = 3 * distribution(random);
     float h = 5 * distribution(random);
     float a = distribution(random) * M_PI;
     Wall wall = {x, y, w, h, a};
+    LOG_DEBUG(logger) << "Creating wall " << wall.x << " " << wall.y << " " << wall.width << " " << wall.height << " " << wall.angle;
 
     wall.create_body(&phys_world);
-
     walls.push_back(wall);
 }
 
@@ -91,6 +89,12 @@ void Arena::update() {
 }
 
 void Arena::write_initial_bytes(std::ostream& os) {
+    unsigned int wall_count = walls.size();
+    os.write(reinterpret_cast<const char*>(&wall_count), 2);
+    for (auto it = walls.begin(); it != walls.end(); it++) {
+        it->write_initial_bytes(os);
+    }
+
     unsigned short player_count = players.size();
     os.write(reinterpret_cast<const char*>(&player_count), 2);
     for (auto it = players.begin(); it != players.end(); it++) {

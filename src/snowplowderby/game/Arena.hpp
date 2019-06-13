@@ -19,6 +19,7 @@ namespace snowplowderby::game {
         private:
             static std::default_random_engine random;
             static std::uniform_real_distribution<float> distribution;
+            static std::uniform_real_distribution<float> wall_pos_distribution;
 
             static util::Logger logger;
             b2World phys_world;

@@ -20,3 +20,10 @@ b2Body* Wall::create_body(b2World* world) {
     return body;
 }
 
+void Wall::write_initial_bytes(std::ostream& os) {
+    os.write(reinterpret_cast<const char*>(&x), 4);
+    os.write(reinterpret_cast<const char*>(&y), 4);
+    os.write(reinterpret_cast<const char*>(&width), 4);
+    os.write(reinterpret_cast<const char*>(&height), 4);
+    os.write(reinterpret_cast<const char*>(&angle), 4);
+}
