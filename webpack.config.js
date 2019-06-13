@@ -2,22 +2,24 @@ const path = require('path');
 
 module.exports = {
     mode: 'development',
-    entry: {
-        game: './client/game/main.js'
-    },
     resolve: {
+        extensions: ['.ts', '.js', '.json'],
         modules: [
             path.resolve(__dirname, 'node_modules'),
-            path.resolve(__dirname, './client'),
+            path.resolve(__dirname, 'src'),
         ]
     },
-    //plugins: [
-    //    // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
-    //    new CleanWebpackPlugin(),
-    //    new HtmlWebpackPlugin({
-    //        title: 'Development'
-    //    })
-    //],
+    entry: {
+        game: './src/client/game/main.ts'
+    },
+    devtool: 'inline-source-map',
+    module: {
+        rules: [{
+            test: /\.tsx?$/,
+            use: 'ts-loader',
+            exclude: /node_modules/
+        }]
+    },
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/scripts')
