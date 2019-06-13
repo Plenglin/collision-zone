@@ -21,7 +21,8 @@ namespace snowplowderby::websocket {
     public:
         WebSocketClient(std::shared_ptr<WSPPConnection> connection);
         ~WebSocketClient();
-        void send_binary(std::string data);
+        void send_binary_unreliable(std::string data);
+        void send_binary_reliable(std::string data);
     };
 
 }
