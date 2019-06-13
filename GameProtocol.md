@@ -29,6 +29,16 @@ A client can be a PLAYER or a SPECTATOR.
 
 ## Server -> Client Types
 
+### `Wall: bytes`
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+x | float | 4 | position
+y | float | 4 | position
+w | float | 4 | size
+h | float | 4 | size
+a | float | 4 | angle
+**TOTAL** | | **20** | 
+
 ### `UpdatePlayer: bytes`
 
 Name | Type | Size (bytes) | Description 
@@ -58,6 +68,8 @@ If the client does not receive a datagram for a player with id `id`, then it is 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
 version | string | ? | null-terminated server version
+wall_count | int | 4 | number of walls
+walls | Wall[] | ? | walls
 player_count | int | 2 | number of players
 players | InitialPlayer[] | ? | all players currently on
 **TOTAL** | | **?** | 
