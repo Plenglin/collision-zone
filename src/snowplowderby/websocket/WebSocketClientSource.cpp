@@ -3,6 +3,9 @@
 #include <websocketpp/connection.hpp>
 #include <memory>
 
+#include "snowplowderby/constants.hpp"
+#include "util/util.hpp"
+
 
 using namespace websocketpp;
 using namespace snowplowderby::websocket;
@@ -38,18 +41,20 @@ void WebSocketClientSource::set_up_handlers() {
         std::shared_ptr<WebSocketClient> client(new WebSocketClient(conn));
         clients.push_back(client);
 
-        std::stringstream serialized_arena;
-        arena->write_initial_bytes(serialized_arena);
-        client->send_binary_reliable(serialized_arena.str());
+        std::stringstream initial_payload;
+        initial_payload << SERVER_VERSION;
+        initial_payload.write(&util::terminator, 1);
+        arena->write_initial_bytes(initial_payload);
+        client->send_binary_reliable(initial_payload.str());
     });
 }
 
 void WebSocketClientSource::update() {
     LOG_TRACE(logger) << "Sending update packets to clients";
-    std::stringstream serialized_arena;
-    arena->write_update_bytes(serialized_arena);
+    std::stringstream initial_payload;
+    arena->write_update_bytes(initial_payload);
     for (auto it = clients.begin(); it != clients.end(); it++) {
-        (*it)->send_binary_unreliable(serialized_arena.str());
+        (*it)->send_binary_unreliable(initial_payload.str());
     }
 }
 

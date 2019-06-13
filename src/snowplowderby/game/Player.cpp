@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include "util/util.hpp"
+
 using namespace snowplowderby;
 
 Player::Player(short id, b2Body* body) : id(id), body(body), user_data{USERDATA_TYPE_PLAYER, this} {
@@ -34,11 +36,10 @@ void Player::write_creation_event(std::ostream& os) {
 void Player::write_initial_bytes(std::ostream& os) {
     write_update_bytes(os);
 
-    char terminator = 0;
     os.write(reinterpret_cast<const char*>(&id), 2);
     os.write(&car_class, 1);
     os << name;
-    os.write(&terminator, 1);
+    os.write(&util::terminator, 1);
 }
 
 void Player::write_update_bytes(std::ostream& os) {
