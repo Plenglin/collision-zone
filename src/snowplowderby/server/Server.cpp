@@ -14,7 +14,6 @@ Server::~Server() {
 void Server::run() {
     LOG_INFO(logger) << "Running server";
     using namespace std::chrono;
-    auto last_update = system_clock::now();
     for (auto it = client_sources.begin(); it != client_sources.end(); it++) {
         LOG_DEBUG(logger) << "Initializing client source " << (*it)->get_name();
         (*it)->initialize();

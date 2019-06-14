@@ -7,14 +7,10 @@ using namespace boost::log::trivial;
 
 util::Logger Client::logger = util::get_logger("Client");
 
-Client::Client() : state(UNINITIALIZED) {
+Client::Client(ArenaPtr arena) : state(UNINITIALIZED), arena(arena) {
 }
 
 Client::~Client() {
-}
-
-void Client::attach(ArenaPtr arena) {
-    this->arena = arena;
 }
 
 void Client::attach(PlayerPtr player) {

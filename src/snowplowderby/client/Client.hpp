@@ -26,9 +26,9 @@ namespace snowplowderby::client {
         std::mutex input_queue_lock;
         std::queue<void*> input_queue;
 
-        void set_state(ClientState state);
+        virtual void set_state(ClientState state);
     public:
-        Client();
+        Client(ArenaPtr arena);
         ~Client();
 
         ClientState get_state();

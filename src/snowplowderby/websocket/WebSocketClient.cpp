@@ -1,19 +1,23 @@
 #include "WebSocketClient.hpp"
+
 #include <rapidjson/document.h>
 #include <rapidjson/rapidjson.h>
-
 #include <string>
+
 #include "util/log.hpp"
+#include "snowplowderby/game/Request.hpp"
 
 
 using namespace websocketpp;
 using namespace snowplowderby::websocket;
+using namespace snowplowderby::game::request;
 using namespace snowplowderby::client;
 
 
 util::Logger WebSocketClient::logger = util::get_logger("WSP-WebSocketClient");
 
-WebSocketClient::WebSocketClient(WebSocketClientSource* parent, std::shared_ptr<WSPPConnection> connection) : parent(parent), connection(connection) {
+WebSocketClient::WebSocketClient(ArenaPtr arena, WebSocketClientSource* parent, std::shared_ptr<WSPPConnection> connection) 
+    : Client(arena), connection(connection), parent(parent) {
     set_state(ClientState::SPECTATING);
 }
 
@@ -55,7 +59,12 @@ void WebSocketClient::read_transition_request(const char* string) {
     std::string name(name_field.GetString());
     char player_class = player_class_field.GetInt();
     LOG_INFO(logger) << "Requesting to create player with name " << name;
-    parent->request_create_player({this, name, player_class});
+    arena->submit_request(new CreatePlayerRequest(
+        player_class, name, [this](PlayerPtr player){
+            on_player_created(player);
+        }
+    ));
+    LOG_INFO(logger) << "Player creation request successfully submitted for " << name;
 }
 
 void WebSocketClient::send_binary_unreliable(std::string data) {
@@ -96,6 +105,8 @@ void WebSocketClient::set_state(ClientState state) {
             connection->set_close_handler([this](auto h) {
                 handle_close_playing(h);
             });
+            break;
+        default:
             break;
     }
 }
@@ -141,6 +152,10 @@ void WebSocketClient::handle_message_playing(connection_hdl handle, WSPPConnecti
 }
 
 void WebSocketClient::handle_close_playing(connection_hdl handle) {
-    LOG_DEBUG(logger) << "Player " << player->get_id() << " disconnected";
-    arena->destroy_player(player);
+    short id = player->get_id();
+    LOG_DEBUG(logger) << "Player " << id << " disconnected";
+
+    arena->submit_request(new DestroyPlayerRequest(player, [id] {
+        LOG_DEBUG(logger) << "Player " << id << " successfully destroyed";
+    }));
 }
