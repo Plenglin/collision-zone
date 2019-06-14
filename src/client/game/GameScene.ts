@@ -30,19 +30,20 @@ export class GameScene extends Scene {
         this.connectToclient()
         this.load.setBaseURL(baseUrl)
         this.load.image("truck", "static/images/truck.png")
+
+        $('#btn-play').click(async () => {
+            const error = await this.attemptStartPlay()
+            if (error != null) {
+                // TODO implement an error notification system
+                console.error(error)
+            }
+        })
     }
     create() {
         console.info("GAME PHASE: Create")
         const cam = this.cameras.main;
         cam.centerOn(0, 0);
         cam.zoom = 4;
-        $('#btn-play').on('click', async () => {
-            const error = await this.verifyPlayerData()
-            if (error != null) {
-                // TODO implement an error notification system
-                console.error(error)
-            }
-        })
     }
     update() {
     }
@@ -54,7 +55,7 @@ export class GameScene extends Scene {
 
     }
 
-    async verifyPlayerData(): Promise<string> {
+    async attemptStartPlay(): Promise<string> {
         const username: string = <string>$('#field-username').val()
         if (username.length == 0) {
             return 'Username cannot be empty'
@@ -62,7 +63,10 @@ export class GameScene extends Scene {
         if (username.length > 20) {
             return 'Username cannot be longer than 20 chars'
         }
-        return null
+        return await this.client.requestTransitionToPlaying({
+            username: username,
+            player_class: 0
+        })
     }
 
 }
