@@ -21,14 +21,17 @@ namespace snowplowderby::websocket {
     using WSPPConnection = websocketpp::connection<websocketpp::config::asio>;
     
     class WebSocketClientSource;
-    
+
     class WebSocketClient : public Client {
     private:
         static util::Logger logger;
         std::shared_ptr<WSPPConnection> connection;
 
-        void read_transition_request(const char* string);
         WebSocketClientSource* parent;
+        void handle_message_spectating(connection_hdl handle, WSPPConnection::message_ptr message);
+        void read_transition_request(const char* string);
+    protected:
+        void set_state(ClientState state);
     public:
         WebSocketClient(WebSocketClientSource* parent, std::shared_ptr<WSPPConnection> connection);
         ~WebSocketClient();
