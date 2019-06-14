@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Snowplow Derby (Name TBD)</title>
   <link rel="stylesheet" href="/static/styles/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/static/styles/game.css">
 </head>
 <body>
+  
   <div id="outer">
     <div id="bs-container">
-      <div class="modal fade" id="player-config-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Snowplow Derby (name TBD)</h5>
-          </div>
-          
-          <div class="modal-body">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Username">
+      <div class="modal fade" id="player-config-modal" tabindex="-1" role="dialog" aria-labelledby="player-config-modal-label" aria-hidden="true" data-backdrop="static">
+        
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            
+            <div class="modal-header">
+              <h5 class="modal-title" id="player-config-modal-label">Snowplow Derby (name TBD)</h5>
             </div>
+            
+            <div class="modal-body">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="field-username-label">Username</span>
+                </div>
+                <input id="field-username" type="text" class="form-control" aria-labelledby="field-username-label" placeholder="N00bM45t3r69">
+              </div>
+            </div>
+            
+            <div class="modal-footer">
+              <button id="btn-play" type="button" class="btn btn-primary">Play!</button>
+            </div>
+            
           </div>
-          
-          <div class="modal-footer">
-            <button id="start-play-btn" type="button" class="btn btn-primary">Play!</button>
-          </div>
-          
         </div>
       </div>
     </div>
+
+    <div id="phaser-div"></div>
+    
   </div>
-  <div id="phaser-div"></div>
   
-</div>
-<script type="text/javascript" src="/static/scripts/game.bundle.js"></script>
+  <script type="text/javascript" src="/static/scripts/game.bundle.js"></script>
 </body>
 </html>
