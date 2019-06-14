@@ -4,7 +4,7 @@
 
 using namespace snowplowderby::game;
 
-Player::Player(short id, b2Body* body) : id(id), body(body), user_data{USERDATA_TYPE_PLAYER, this} {
+Player::Player(short id, char car_class, std::string name, b2Body* body) : id(id), car_class(car_class), name(name), body(body), user_data{USERDATA_TYPE_PLAYER, this} {
 }
 
 util::UserDataWrapper* Player::get_user_data() {

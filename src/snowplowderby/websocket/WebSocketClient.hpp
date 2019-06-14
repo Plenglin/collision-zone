@@ -2,8 +2,11 @@
 
 #include <websocketpp/config/asio_no_tls.hpp>
 
+#include <rapidjson/document.h>
+#include <rapidjson/rapidjson.h>
 #include <websocketpp/connection.hpp>
 #include <websocketpp/server.hpp>
+
 #include "snowplowderby/client/Client.hpp"
 #include "util/log.hpp"
 
@@ -18,7 +21,10 @@ namespace snowplowderby::websocket {
     private:
         static util::Logger logger;
         std::shared_ptr<WSPPConnection> connection;
-    public:
+
+        void read_transition_request(const char* string);
+
+       public:
         WebSocketClient(std::shared_ptr<WSPPConnection> connection);
         ~WebSocketClient();
         void send_binary_unreliable(std::string data);

@@ -20,14 +20,14 @@ namespace snowplowderby::game {
     private:
         const short id;
         const char car_class = 0;
+        std::string name;
         b2Body* body;
 
         bool alive = true;
 
         util::UserDataWrapper user_data;
-        std::string name;
     public:
-        Player(short id, b2Body* body);
+        Player(short id, char car_class, std::string name, b2Body* body);
 
         short get_id();
         char get_car_class();

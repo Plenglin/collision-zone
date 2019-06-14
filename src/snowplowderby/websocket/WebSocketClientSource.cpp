@@ -26,6 +26,7 @@ void WebSocketClientSource::initialize() {
     server.init_asio();
     set_up_handlers();
     server.listen(port);
+    server.clear_access_channels(websocketpp::log::alevel::frame_header | websocketpp::log::alevel::frame_payload);
     server.start_accept();
     websocket_thread = new std::thread([this](){
         LOG_INFO(logger) << "Websocket thread started";

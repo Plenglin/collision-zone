@@ -20,12 +20,12 @@
 
 using namespace boost::log::trivial;
 
-#define LOG_TRACE(logger)  BOOST_LOG_SEV(logger, trace)
-#define LOG_DEBUG(logger)  BOOST_LOG_SEV(logger, debug)
-#define LOG_INFO(logger)   BOOST_LOG_SEV(logger, info)
-#define LOG_WARN(logger)   BOOST_LOG_SEV(logger, warning)
-#define LOG_ERROR(logger)  BOOST_LOG_SEV(logger, error)
-#define LOG_FATAL(logger)  BOOST_LOG_SEV(logger, fatal)
+#define LOG_TRACE(logger)  BOOST_LOG_SEV(logger, severity_level::trace)
+#define LOG_DEBUG(logger)  BOOST_LOG_SEV(logger, severity_level::debug)
+#define LOG_INFO(logger)   BOOST_LOG_SEV(logger, severity_level::info)
+#define LOG_WARN(logger)   BOOST_LOG_SEV(logger, severity_level::warning)
+#define LOG_ERROR(logger)  BOOST_LOG_SEV(logger, severity_level::error)
+#define LOG_FATAL(logger)  BOOST_LOG_SEV(logger, severity_level::fatal)
 
 namespace util {
 

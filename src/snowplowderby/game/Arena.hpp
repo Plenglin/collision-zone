@@ -33,7 +33,7 @@ namespace snowplowderby::game {
 
             void create_random_wall();
 
-            PlayerPtr create_player();
+            PlayerPtr create_player(char car_class, std::string name);
             void destroy_player(PlayerPtr player);
 
             void update();

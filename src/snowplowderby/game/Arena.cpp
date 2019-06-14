@@ -54,7 +54,7 @@ void Arena::create_random_wall() {
     walls.push_back(wall);
 }
 
-PlayerPtr Arena::create_player() {
+PlayerPtr Arena::create_player(char car_class, std::string name) {
     b2BodyDef body_def;
     body_def.position.Set(0.0, 0.0);
     b2Body* body = phys_world.CreateBody(&body_def);
@@ -66,7 +66,7 @@ PlayerPtr Arena::create_player() {
     body->CreateFixture(&fixture_def);
 
     short id = next_player_id++;
-    PlayerPtr player(new Player(id, body));
+    PlayerPtr player(new Player(id, car_class, name, body));
     body->SetUserData(player->get_user_data());
 
     players[id] = player;
