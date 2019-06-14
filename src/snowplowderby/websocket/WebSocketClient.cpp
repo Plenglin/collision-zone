@@ -82,9 +82,21 @@ void WebSocketClient::on_player_created(PlayerPtr player) {
 
 void WebSocketClient::set_state(ClientState state) {
     Client::set_state(state);
-    if (state == SPECTATING) {
-        connection->set_message_handler([this](auto h, auto m){ handle_message_spectating(h, m); });
-        connection->set_close_handler(nullptr);
+    switch (state) {
+        case SPECTATING:
+            connection->set_message_handler([this](auto h, auto m){ 
+                handle_message_spectating(h, m); 
+            });
+            connection->set_close_handler(nullptr);
+            break;
+        case PLAYING:
+            connection->set_message_handler([this](auto h, auto m) {
+                handle_message_playing(h, m);
+            });
+            connection->set_close_handler([this](auto h) {
+                handle_close_playing(h);
+            });
+            break;
     }
 }
 
@@ -100,13 +112,35 @@ void WebSocketClient::handle_message_spectating(connection_hdl handle, WSPPConne
     if (type == 'r') {
         char cmd_type;
         stream >> cmd_type;
-        if (cmd_type == 't') {
-            try {
-                read_transition_request(payload.c_str() + 2);
-            } catch (...) {
-                LOG_ERROR(logger) << "Error in reading transition request";
-            }
+        if (cmd_type == 't') {  // transition request
+            read_transition_request(payload.c_str() + 2);
             return;
         }
     }
+}
+
+void WebSocketClient::handle_message_playing(connection_hdl handle, WSPPConnection::message_ptr message) {
+    auto handle_raw = handle.lock().get();
+    auto payload = message->get_payload();
+    LOG_TRACE(logger) << "Received message from " << handle_raw << ": " << payload;
+
+    std::stringstream stream(payload);
+    char type;
+    char cmd_type;
+    stream >> type;
+
+    if (type == 'r') {  // reliable
+        stream >> cmd_type;
+        switch (cmd_type) {
+            case 's':  // Chat
+            break;
+        }
+    } else {  // unreliable
+        stream >> cmd_type;
+    }
+}
+
+void WebSocketClient::handle_close_playing(connection_hdl handle) {
+    LOG_DEBUG(logger) << "Player " << player->get_id() << " disconnected";
+    arena->destroy_player(player);
 }
