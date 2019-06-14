@@ -40,6 +40,8 @@ namespace snowplowderby::game {
 
             void write_initial_bytes(std::ostream& os);
             void write_update_bytes(std::ostream& os);
+    
+            void clear_event_buffers();
     };
 
     typedef std::shared_ptr<Arena> ArenaPtr;

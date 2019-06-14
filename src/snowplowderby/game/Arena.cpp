@@ -70,17 +70,23 @@ PlayerPtr Arena::create_player(char car_class, std::string name) {
     body->SetUserData(player->get_user_data());
 
     players[id] = player;
+    new_players.push_back(player);
 
     LOG_INFO(logger) << "Created player with id " << id;
     return player;
 }
 
 void Arena::destroy_player(PlayerPtr player) {
-
+    phys_world.DestroyBody(player->get_body());
+    players.erase(player->get_id());
 }
 
 Arena::~Arena() {
     
+}
+
+void Arena::clear_event_buffers() {
+    new_players.clear();
 }
 
 void Arena::update() {

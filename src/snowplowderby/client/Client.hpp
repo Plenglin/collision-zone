@@ -19,12 +19,14 @@ namespace snowplowderby::client {
     class Client {
     private:
         static util::Logger logger;
+        ClientState state;
     protected:
         ArenaPtr arena;
         PlayerPtr player;
         std::mutex input_queue_lock;
         std::queue<void*> input_queue;
-        ClientState state;
+
+        void set_state(ClientState state);
     public:
         Client();
         ~Client();

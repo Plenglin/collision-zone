@@ -33,6 +33,7 @@ namespace snowplowderby::game {
         char get_car_class();
         bool is_alive();
         bool is_boosting();
+        b2Body* get_body();
 
         util::UserDataWrapper* get_user_data();
 

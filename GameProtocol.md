@@ -96,6 +96,8 @@ Name | Type | Size (bytes) | Description
 -----|------|--------------|------------
 event_type | int | 1 | the number `0x01`
 success | int | 1 | `0` = success, `1` = malformed request, `2` = username taken, `3` = username too long, `4` = username empty
+player_id | int | 2 | the player's ID. does not matter if success != 0
+**TOTAL** | | **4** | 
 
 ## Client -> Server Types
 

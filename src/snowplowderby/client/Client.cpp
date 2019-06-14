@@ -22,5 +22,10 @@ void Client::attach(PlayerPtr player) {
 }
 
 ClientState Client::get_state() {
+    LOG_INFO(logger) << "Setting to state " << state;
     return state;
+}
+
+void Client::set_state(ClientState state) {
+    this->state = state;
 }
