@@ -29,6 +29,8 @@ namespace snowplowderby::websocket {
 
         WebSocketClientSource* parent;
         void handle_message_spectating(connection_hdl handle, WSPPConnection::message_ptr message);
+        void handle_message_playing(connection_hdl handle, WSPPConnection::message_ptr message);
+        void handle_close_playing(connection_hdl handle);
         void read_transition_request(const char* string);
     protected:
         void set_state(ClientState state);
