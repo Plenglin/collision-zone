@@ -39,7 +39,7 @@ void WebSocketClientSource::set_up_handlers() {
     server.set_open_handler([this](connection_hdl handle) {
         LOG_INFO(logger) << "A new connection was made with handle: " << handle.lock().get();
         auto conn = server.get_con_from_hdl(handle);
-        std::shared_ptr<WebSocketClient> client(new WebSocketClient(conn));
+        std::shared_ptr<WebSocketClient> client(new WebSocketClient(this, conn));
         clients.push_back(client);
 
         std::stringstream initial_payload;
@@ -50,7 +50,22 @@ void WebSocketClientSource::set_up_handlers() {
     });
 }
 
+void WebSocketClientSource::fulfill_player_create_requests() {
+    std::lock_guard<std::mutex> lock(create_player_requests_mutex);
+    while (create_player_requests.size() > 0) {
+        auto req = create_player_requests.front();
+        create_player_requests.pop();
+
+        LOG_TRACE(logger) << "Creating player with name " << req.name;
+
+        auto player = arena->create_player(req.player_class, req.name);
+        req.requestor->on_player_created(player);
+    }
+}
+
 void WebSocketClientSource::update() {
+    fulfill_player_create_requests();
+    
     LOG_TRACE(logger) << "Sending update packets to clients";
     std::stringstream initial_payload;
     arena->write_update_bytes(initial_payload);
@@ -62,3 +77,9 @@ void WebSocketClientSource::update() {
 std::string WebSocketClientSource::get_name() {
     return "WebSocket";
 }
+
+void WebSocketClientSource::request_create_player(CreatePlayerRequest request) {
+    std::lock_guard<std::mutex> lock(create_player_requests_mutex);
+    create_player_requests.push(request);
+}
+

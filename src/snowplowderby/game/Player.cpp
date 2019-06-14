@@ -19,6 +19,10 @@ short Player::get_id() {
     return id;
 }
 
+b2Body* Player::get_body() {
+    return body;
+}
+
 bool Player::is_alive() {
     return alive;
 }
