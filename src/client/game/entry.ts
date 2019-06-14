@@ -12,7 +12,6 @@ const PHASER_CONFIG = {
     scene: GameScene
 }
 
-
 $('#player-config-modal').modal('show')
 
 const phaser = new Phaser.Game(PHASER_CONFIG)

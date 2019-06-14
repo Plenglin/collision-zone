@@ -30,12 +30,24 @@ export class GameScene extends Scene {
         this.connectToclient()
         this.load.setBaseURL(baseUrl)
         this.load.image("truck", "static/images/truck.png")
+        
+        const btn = $('#btn-play')
+        btn.click(async () => {
+            if (btn.hasClass("disabled")) {
+                return;
+            }
 
-        $('#btn-play').click(async () => {
+            btn.addClass('disabled')
+            $('#spinner-connect').show()
             const error = await this.attemptStartPlay()
+            $('#spinner-connect').hide()
+
             if (error != null) {
                 // TODO implement an error notification system
                 console.error(error)
+                $('#btn-play').removeClass('disabled')
+            } else {
+                $('#player-config-modal').modal('hide')
             }
         })
     }
@@ -63,10 +75,11 @@ export class GameScene extends Scene {
         if (username.length > 20) {
             return 'Username cannot be longer than 20 chars'
         }
-        return await this.client.requestTransitionToPlaying({
+        const result = await this.client.requestTransitionToPlaying({
             username: username,
             player_class: 0
         })
+        return result
     }
 
 }
