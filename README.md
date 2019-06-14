@@ -8,6 +8,7 @@ Snowplow Derby Main Server
 
 ## Later features
 
+- Advertising for that sweet $$$
 - Social media integration
 - User accounts, high scores
 - Start and stop servers as necessary (perhaps make another server for that?)

@@ -1,14 +1,16 @@
 const express = require('express')
+const path = require('path')
 
 const PORT = 3000
 const SERVER_INFO = {
     url: 'ws://localhost:42069'
 }
+const ROOT = path.resolve(__dirname, '..')
 
 const app = express()
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/views/game.html')
+    res.sendFile(ROOT + '/public/views/game.html')
 })
 app.get('/data/server-info', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
