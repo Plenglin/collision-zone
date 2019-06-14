@@ -14,6 +14,7 @@ export class Client {
 
     private resolveTransitionRequest: any
     private rejectTransitionRequest: any
+    private playerId: integer;
     
     constructor(url: string, private scene: GameScene) {
         this.url = url
@@ -45,11 +46,14 @@ export class Client {
         this.socket.onmessage = async (data) => {
             const buf = await new Response(data.data).arrayBuffer()
             const stream = new ByteArrayInputStream(buf)
-            if (stream.readByte() == 117) {  // unreliable
+
+            const channel_type = stream.readByte();  // temporary measure for the protocol
+            if (channel_type == 117) {  // unreliable
                 this.readPeriodicGameUpdate(stream)
             } else {
-                switch (stream.readByte()) {
-                    case 41:  // Transition response
+                const event_type = stream.readByte();
+                switch (event_type) {
+                    case 1:  // Transition response
                         this.readTransitionResponse(stream)
                         break;
                     default:
@@ -67,8 +71,9 @@ export class Client {
         const code = stream.readByte()
         switch (code) {
             case 0:
-                this.resolveTransitionRequest(null)
                 this.state = ClientState.PLAYING
+                this.playerId = stream.readShort()
+                this.resolveTransitionRequest(null)
                 return;
             case 1:
                 this.rejectTransitionRequest('Malformed request')
