@@ -36,6 +36,13 @@ export class GameScene extends Scene {
         const cam = this.cameras.main;
         cam.centerOn(0, 0);
         cam.zoom = 4;
+        $('#btn-play').on('click', async () => {
+            const error = await this.verifyPlayerData()
+            if (error != null) {
+                // TODO implement an error notification system
+                console.error(error)
+            }
+        })
     }
     update() {
     }
@@ -46,4 +53,16 @@ export class GameScene extends Scene {
     addPlayer() {
 
     }
+
+    async verifyPlayerData(): Promise<string> {
+        const username: string = <string>$('#field-username').val()
+        if (username.length == 0) {
+            return 'Username cannot be empty'
+        }
+        if (username.length > 20) {
+            return 'Username cannot be longer than 20 chars'
+        }
+        return null
+    }
+
 }
