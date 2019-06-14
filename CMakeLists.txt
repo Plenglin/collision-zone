@@ -20,6 +20,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/lib")
 
+set(CMAKE_BUILD_TYPE Debug)
+
 # All files that are not entry points
 set(SOURCES 
        ${PROJECT_SOURCE_DIR}/src/util/log.cpp 

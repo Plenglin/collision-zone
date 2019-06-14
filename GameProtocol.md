@@ -86,13 +86,22 @@ players | UpdatePlayer[] | player_count * size | the players
 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
-event_type | int | 1 | the number `32`, for identifying the event type
+event_type | int | 1 | the number `0x81`
 players | InitialPlayer | ? | the player
 **TOTAL** | | **?** | 
+
+### `TransitionResponse: bytes`
+
+Name | Type | Size (bytes) | Description 
+-----|------|--------------|------------
+event_type | int | 1 | the number `0x01`
+success | int | 1 | `0` = success, `1` = malformed request, `2` = username taken, `3` = username too long, `4` = username empty
 
 ## Client -> Server Types
 
 ### `BecomePlayer: JSON`
+
+Prepended by the byte 116 (ASCII `t`) as signaling
 
 Name | Type | Description 
 -----|------|-------------
