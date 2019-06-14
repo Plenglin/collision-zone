@@ -3,6 +3,8 @@
 #include <Box2D/Box2D.h>
 #include <random>
 #include <ctgmath>
+#include <mutex>
+#include <thread>
 
 #include "Player.hpp"
 
@@ -48,7 +50,6 @@ void Arena::create_random_wall() {
     float h = 5 * distribution(random);
     float a = distribution(random) * M_PI;
     Wall wall = {x, y, w, h, a};
-    LOG_DEBUG(logger) << "Creating wall " << wall.x << " " << wall.y << " " << wall.width << " " << wall.height << " " << wall.angle;
 
     wall.create_body(&phys_world);
     walls.push_back(wall);
@@ -91,6 +92,7 @@ void Arena::clear_event_buffers() {
 
 void Arena::update() {
     LOG_TRACE(logger) << "Updating arena";
+    fulfill_requests();
     phys_world.Step(UPDATE_PERIOD / 1000., 6, 2);
 }
 
@@ -119,5 +121,22 @@ void Arena::write_update_bytes(std::ostream& os) {
     os.write(reinterpret_cast<const char*>(&player_count), 2);
     for (auto it = players.begin(); it != players.end(); it++) {
         it->second->write_update_bytes(os);
+    }
+}
+
+void Arena::submit_request(request::Request* request) {
+    LOG_DEBUG(logger) << "Received request " << request << " from thread " << std::this_thread::get_id();
+    std::lock_guard <std::mutex> lock(requests_mutex);
+    requests.push(request);
+}
+
+void Arena::fulfill_requests() {
+    std::lock_guard<std::mutex> lock(requests_mutex);
+    while (requests.size() > 0) {
+        auto request = requests.front();
+        LOG_DEBUG(logger) << "Fulfilling request " << request;
+        requests.pop();
+        request->fulfill(this);
+        delete request;
     }
 }

@@ -33,9 +33,9 @@ namespace snowplowderby::websocket {
         void handle_close_playing(connection_hdl handle);
         void read_transition_request(const char* string);
     protected:
-        void set_state(ClientState state);
+        void set_state(ClientState state) override;
     public:
-        WebSocketClient(WebSocketClientSource* parent, std::shared_ptr<WSPPConnection> connection);
+        WebSocketClient(ArenaPtr arena, WebSocketClientSource* parent, std::shared_ptr<WSPPConnection> connection);
         ~WebSocketClient();
         
         void send_binary_unreliable(std::string data);

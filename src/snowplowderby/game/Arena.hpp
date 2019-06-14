@@ -2,18 +2,25 @@
 
 #include <Box2D/Box2D.h>
 #include <Box2D/Common/b2Math.h>
-#include <list>
+#include <vector>
+#include <queue>
+#include <mutex>
 #include <ostream>
 #include <random>
 #include <unordered_map>
 
 #include "Player.hpp"
 #include "Wall.hpp"
+#include "Request.hpp"
 #include "util/log.hpp"
 
 #define UPDATE_PERIOD 50  // Milliseconds
 
 namespace snowplowderby::game {
+
+    namespace request {
+        class Request;
+    }
 
     class Arena {
         private:
@@ -24,9 +31,14 @@ namespace snowplowderby::game {
             static util::Logger logger;
             b2World phys_world;
             std::unordered_map<short, PlayerPtr> players;
-            std::list<PlayerPtr> new_players;
-            std::list<Wall> walls;
+            std::vector<PlayerPtr> new_players;
+            std::vector<Wall> walls;
             short next_player_id = 0;
+
+            std::mutex requests_mutex;
+            std::queue<request::Request*> requests;
+
+            void fulfill_requests();
         public:
             Arena();
             ~Arena();
@@ -42,6 +54,12 @@ namespace snowplowderby::game {
             void write_update_bytes(std::ostream& os);
     
             void clear_event_buffers();
+
+            /**
+             * Submit a request to this arena. The lifetime of this object is managed by the Arena.
+             * The request will be deleted upon fulfillment.
+             */
+            void submit_request(request::Request* request);
     };
 
     typedef std::shared_ptr<Arena> ArenaPtr;
