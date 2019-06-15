@@ -19,7 +19,7 @@ export class Client {
     playerId: integer = null
     player: Player = null
 
-    private sendPlayerTask: number
+    private sendPlayerTask: number = null
     private playerDx: number = 0
     private playerDy: number = 0
     
@@ -46,6 +46,12 @@ export class Client {
         this.state = ClientState.UNINITIALIZED
         this.socket.onmessage = (data) => {
             this.readInitializationMessage(data.data)
+        }
+        this.socket.onclose = (data) => {
+            console.info("socket closed")
+            if (this.sendPlayerTask != null) {
+                clearInterval(this.sendPlayerTask)
+            }
         }
     }
 
@@ -75,11 +81,13 @@ export class Client {
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
         const player_count = stream.readShort()
+        // console.debug("reading", player_count, "players")
         for (var i = 0; i < player_count; i++) {
             const data = readUpdatePlayerFromStream(stream)         
             const player = this.scene.players.get(data.id)
-            if (player != null) {
-                console.debug(data)
+            // console.debug("player update", data)
+            // console.debug("existing", player)
+            if (player != undefined) {
                 player.applyServerUpdate(data)
             }
         }
@@ -91,6 +99,7 @@ export class Client {
             case 0:
                 this.state = ClientState.PLAYING
                 this.playerId = stream.readShort()
+                console.log("Received player id", this.playerId)
                 const self = this
                 this.sendPlayerTask = <any> setInterval(() => self.sendPlayerInput(), 50)
                 this.resolveTransitionRequest(null)
@@ -114,9 +123,9 @@ export class Client {
     private async readPlayerJoinedEvent(stream: ByteArrayInputStream) {
         const count = stream.readShort();
         for (var i = 0; i < count; i++) {
-            const data = readInitialPlayerFromStream(stream);
+            const data = readInitialPlayerFromStream(stream)
             console.log("player with", data, "joined")
-            const player = this.scene.addPlayer(data);
+            const player = this.scene.addPlayer(data)
             if (this.player == null && player.id == this.playerId) {
                 this.player = player
                 this.onThisPlayerCreated()
@@ -129,20 +138,20 @@ export class Client {
         console.debug("Received initialization message", data)
         this.setSpectating()
 
-        const stream = new ByteArrayInputStream(data);
-        stream.readByte();  // clear u/r
+        const stream = new ByteArrayInputStream(data)
+        stream.readByte()  // clear u/r
 
-        const version = stream.readStringUntilNull();
+        const version = stream.readStringUntilNull()
         console.info("Server version ", version)
 
-        const wallCount = stream.readShort();
+        const wallCount = stream.readShort()
         console.debug("Reading", wallCount, "walls")
         for (var i = 0; i < wallCount; i++) {
             const wall = Wall.readFromStream(this.scene, stream)
             this.scene.addWall(wall)
         }
 
-        const playerCount = stream.readShort();
+        const playerCount = stream.readShort()
         console.debug("Reading", playerCount, "players")
         for (var i = 0; i < playerCount; i++) {
             const data = readInitialPlayerFromStream(stream)
@@ -156,6 +165,7 @@ export class Client {
         dv.setUint8(0, 117)
         dv.setFloat32(1, this.playerDx, true)
         dv.setFloat32(5, this.playerDy, true)
+        // console.debug("sending", this.playerDx, this.playerDy)
         this.socket.send(buf)
     }
 
