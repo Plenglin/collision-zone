@@ -1,3 +1,4 @@
+import * as $ from 'jquery'
 import { ByteArrayInputStream } from "../../util";
 import { Player, readUpdatePlayerFromStream, readInitialPlayerFromStream } from "./Player";
 import { Wall } from "./Wall";
@@ -183,12 +184,19 @@ export class PlayerInputHandler extends GameObjects.GameObject {
         super(scene, 'player-input-handler')
         this.pointer = this.scene.game.input.activePointer
         this.player = client.player
-        this.scene.input.setPollAlways()
-        this.scene.input.on('pointermove', () => {
-            const p = scene.cameras.main.getWorldPoint(this.pointer.x, this.pointer.y)
+        // this.scene.input.setPollAlways()
+        // this.scene.input.on('pointermove', () => {
+        //     const p = scene.cameras.main.getWorldPoint(this.pointer.x, this.pointer.y)
+        //     const dx = p.x - this.player.x
+        //     const dy = p.y - this.player.y
+        //     console.debug(dx, dy)
+        //     client.setPlayerInput(dx, dy)
+        // })
+
+        $('body').mousemove((event) => {
+            const p = scene.cameras.main.getWorldPoint(event.screenX, event.screenY)
             const dx = p.x - this.player.x
             const dy = p.y - this.player.y
-            console.debug(dx, dy)
             client.setPlayerInput(dx, dy)
         })
     }
