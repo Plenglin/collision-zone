@@ -3,7 +3,7 @@ import { Player, readUpdatePlayerFromStream, readInitialPlayerFromStream } from 
 import { Wall } from "./Wall";
 import { GameScene } from "./GameScene";
 
-enum ClientState {
+export enum ClientState {
     UNINITIALIZED, SPECTATING, REQUESTING_TRANSITION_TO_PLAYING, PLAYING
 }
 
@@ -14,7 +14,8 @@ export class Client {
 
     private resolveTransitionRequest: any
     private rejectTransitionRequest: any
-    private playerId: integer;
+    playerId: integer;
+    player: Player
     
     constructor(url: string, private scene: GameScene) {
         this.url = url
@@ -43,6 +44,7 @@ export class Client {
     }
 
     private setSpectating() {
+        this.state = ClientState.SPECTATING
         this.socket.onmessage = async (data) => {
             const buf = await new Response(data.data).arrayBuffer()
             const stream = new ByteArrayInputStream(buf)
@@ -104,7 +106,11 @@ export class Client {
         const count = stream.readShort();
         for (var i = 0; i < count; i++) {
             const data = readInitialPlayerFromStream(stream);
-            this.scene.addPlayer(data);
+            const player = this.scene.addPlayer(data);
+            if (player.id == this.playerId) {
+                this.player = player
+                this.scene.cameras.main.startFollow(player)
+            }
         }
     }
 

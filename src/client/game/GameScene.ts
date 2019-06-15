@@ -1,6 +1,6 @@
 import { Scene } from "phaser"
 import { Player, InitialPlayer } from "client/game/Player"
-import { Client } from 'client/game/Client'
+import { Client, ClientState } from 'client/game/Client'
 
 import * as $ from "jquery"
 import { Wall } from "./Wall";
@@ -10,6 +10,9 @@ export class GameScene extends Scene {
     client: Client = null
     players: Map<integer, Player> = new Map()
     walls: Wall[] = []
+
+    private spectateX: number;
+    private spectateY: number;
 
     constructor() {
         super('GameScene')
@@ -53,19 +56,34 @@ export class GameScene extends Scene {
     }
     create() {
         console.info("GAME PHASE: Create")
-        const cam = this.cameras.main;
-        cam.centerOn(0, 0);
-        cam.zoom = 32;
+        const cam = this.cameras.main
+        cam.zoom = 32
     }
     update() {
+        const cam = this.cameras.main
+        switch (this.client.state) {
+            case ClientState.SPECTATING:
+                cam.centerOn(0, 0)
+                break;
+            case ClientState.PLAYING:
+                const player = this.players.get(this.client.playerId)
+                if (player == undefined) {  // If it hasn't been registered yet
+                    return
+                }
+                break;
+            default:
+                break;
+        }
     }
     addWall(wall: Wall) {
-        this.walls.push(wall)
         this.add.existing(wall)
+        this.walls.push(wall)
     }
-    addPlayer(data: InitialPlayer) {
+    addPlayer(data: InitialPlayer): Player {
         const player = new Player(this, data)
         this.add.existing(player)
+        this.players.set(player.id, player);
+        return player
     }
 
     async attemptStartPlay(): Promise<string> {
