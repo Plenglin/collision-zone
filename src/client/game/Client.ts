@@ -2,6 +2,7 @@ import { ByteArrayInputStream } from "../../util";
 import { Player, readUpdatePlayerFromStream, readInitialPlayerFromStream } from "./Player";
 import { Wall } from "./Wall";
 import { GameScene } from "./GameScene";
+import { GameObjects, Scene, Input } from "phaser";
 
 export enum ClientState {
     UNINITIALIZED, SPECTATING, REQUESTING_TRANSITION_TO_PLAYING, PLAYING
@@ -14,8 +15,12 @@ export class Client {
 
     private resolveTransitionRequest: any
     private rejectTransitionRequest: any
-    playerId: integer;
-    player: Player
+    playerId: integer = null
+    player: Player = null
+
+    private sendPlayerTask: number
+    private playerDx: number = 0
+    private playerDy: number = 0
     
     constructor(url: string, private scene: GameScene) {
         this.url = url
@@ -84,6 +89,8 @@ export class Client {
             case 0:
                 this.state = ClientState.PLAYING
                 this.playerId = stream.readShort()
+                const self = this
+                this.sendPlayerTask = <any> setInterval(() => self.sendPlayerInput(), 50)
                 this.resolveTransitionRequest(null)
                 return;
             case 1:
@@ -107,9 +114,9 @@ export class Client {
         for (var i = 0; i < count; i++) {
             const data = readInitialPlayerFromStream(stream);
             const player = this.scene.addPlayer(data);
-            if (player.id == this.playerId) {
+            if (this.player == null && player.id == this.playerId) {
                 this.player = player
-                this.scene.cameras.main.startFollow(player)
+                this.onThisPlayerCreated()
             }
         }
     }
@@ -140,9 +147,45 @@ export class Client {
         }
     }
 
+    private sendPlayerInput() {
+        const buf = new ArrayBuffer(9)
+        const dv = new DataView(buf)
+        dv.setUint8(0, 117)
+        dv.setFloat32(1, this.playerDx, true)
+        dv.setFloat32(5, this.playerDy, true)
+        this.socket.send(buf)
+    }
+
+    setPlayerInput(dx: number, dy: number) {
+        this.playerDx = dx
+        this.playerDy = dy
+    }
+
+    private onThisPlayerCreated() {
+        this.scene.cameras.main.startFollow(this.player)
+        const ih = new PlayerInputHandler(this.scene, this)
+        this.scene.add.existing(ih)
+    }
+
 }
 
 interface BecomePlayerRequest {
     username: string;
     player_class: integer;
+}
+
+export class PlayerInputHandler extends GameObjects.GameObject {
+    private pointer: Input.Pointer
+    private player: Player
+    constructor(scene: Scene, private client: Client) {
+        super(scene, 'player-input-handler')
+        this.pointer = this.scene.input.activePointer
+        this.player = client.player
+    }
+
+    preUpdate() {
+        const dx = this.pointer.worldX - this.player.x
+        const dy = this.pointer.worldY - this.player.y
+        this.client.setPlayerInput(dx, dy)
+    }
 }
