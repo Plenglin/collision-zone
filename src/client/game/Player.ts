@@ -27,7 +27,7 @@ export class Player extends GameObjects.Sprite {
         if (data.id != this.id) {
             throw `Player ${this.id} received update meant for ${data.id}`
         }
-        this.setAngle(Math.PI * data.angle / 180)
+        this.setRotation(data.angle)
         this.setPosition(data.x, data.y)
         this.vx = data.vx
         this.vy = data.vy

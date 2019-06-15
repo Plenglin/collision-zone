@@ -194,9 +194,10 @@ export class PlayerInputHandler extends GameObjects.GameObject {
         // })
 
         $('body').mousemove((event) => {
-            const p = scene.cameras.main.getWorldPoint(event.screenX, event.screenY)
+            const p = scene.cameras.main.getWorldPoint(event.pageX, event.pageY)
             const dx = p.x - this.player.x
             const dy = p.y - this.player.y
+            // console.debug(dx, dy)
             client.setPlayerInput(dx, dy)
         })
     }
