@@ -38,7 +38,7 @@ export class Client {
     private setUninitialized() {
         this.state = ClientState.UNINITIALIZED
         this.socket.onmessage = (data) => {
-            this.onInitializationMessage(data.data)
+            this.readInitializationMessage(data.data)
         }
     }
 
@@ -56,6 +56,8 @@ export class Client {
                     case 1:  // Transition response
                         this.readTransitionResponse(stream)
                         break;
+                    case 0x41:
+                        this.readPlayerJoinedEvent(stream)
                     default:
                         break;
                 }
@@ -98,7 +100,15 @@ export class Client {
         this.state = ClientState.SPECTATING
     }
 
-    private async onInitializationMessage(blob: Blob) {
+    private async readPlayerJoinedEvent(stream: ByteArrayInputStream) {
+        const count = stream.readShort();
+        for (var i = 0; i < count; i++) {
+            const data = readInitialPlayerFromStream(stream);
+            this.scene.addPlayer(data);
+        }
+    }
+
+    private async readInitializationMessage(blob: Blob) {
         const data = await new Response(blob).arrayBuffer()
         console.debug("Received initialization message", data)
         this.setSpectating()
