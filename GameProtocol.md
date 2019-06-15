@@ -24,12 +24,13 @@ A client can be a PLAYER or a SPECTATOR.
 ### SPECTATOR wants to become PLAYER
 
 0. Client A -> Server, reliable: `BecomePlayer`
-1. Server -> Client *, reliable: `InitialPlayer`
+1. Server -> Client *, reliable: `NewPlayersEvent`
     - The player name can be modified in the event of a duplicate
 
 ## Server -> Client Types
 
 ### `Wall: bytes`
+
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
 x | float | 4 | position
@@ -82,12 +83,13 @@ player_count | int | 2 | how many players there are
 players | UpdatePlayer[] | player_count * size | the players
 **TOTAL** | | **?** | 
 
-### `PlayerCreatedEvent: bytes`
+### `NewPlayersEvent: bytes`
 
 Name | Type | Size (bytes) | Description 
 -----|------|--------------|------------
-event_type | int | 1 | the number `0x81`
-players | InitialPlayer | ? | the player
+event_type | int | 1 | the number `0x41`
+player_count | int | 2 | how many new players there are
+players | InitialPlayer | ? | the new players
 **TOTAL** | | **?** | 
 
 ### `TransitionResponse: bytes`

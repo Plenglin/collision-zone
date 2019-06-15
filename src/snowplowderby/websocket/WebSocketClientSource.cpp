@@ -52,10 +52,22 @@ void WebSocketClientSource::set_up_handlers() {
 
 void WebSocketClientSource::update() {  
     LOG_TRACE(logger) << "Sending update packets to clients";
-    std::stringstream initial_payload;
-    arena->write_update_bytes(initial_payload);
+    std::stringstream new_players_payload;
+    auto new_players = arena->get_new_players();
+    const unsigned short new_player_count = new_players.size();
+    const char buffer[] = {0x41, (char)new_player_count, (char)(new_player_count >> 8)};
+
+    new_players_payload.write(buffer, 3);
+    for (auto it = new_players.begin(); it != new_players.end(); it++) {
+        (*it)->write_initial_bytes(new_players_payload);
+    }
+
+    std::stringstream update_payload;
+    arena->write_update_bytes(update_payload);
+
     for (auto it = clients.begin(); it != clients.end(); it++) {
-        (*it)->send_binary_unreliable(initial_payload.str());
+        (*it)->send_binary_reliable(new_players_payload.str());
+        (*it)->send_binary_unreliable(update_payload.str());
     }
 }
 

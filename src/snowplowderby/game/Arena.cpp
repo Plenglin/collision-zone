@@ -140,3 +140,7 @@ void Arena::fulfill_requests() {
         delete request;
     }
 }
+
+std::vector<PlayerPtr> Arena::get_new_players() {
+    return new_players;
+}
