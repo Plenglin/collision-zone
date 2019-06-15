@@ -54,13 +54,13 @@ export class Client {
             const buf = await new Response(data.data).arrayBuffer()
             const stream = new ByteArrayInputStream(buf)
 
-            const channel_type = stream.readByte();  // temporary measure for the protocol
+            const channel_type = stream.readByte()  // temporary measure for the protocol
             if (channel_type == 117) {  // unreliable
                 this.readPeriodicGameUpdate(stream)
             } else {
-                const event_type = stream.readByte();
+                const event_type = stream.readByte()
                 switch (event_type) {
-                    case 1:  // Transition response
+                    case 0x01:  // Transition response
                         this.readTransitionResponse(stream)
                         break;
                     case 0x41:
@@ -73,12 +73,13 @@ export class Client {
     }
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
-        const player_count = stream.readShort();
+        const player_count = stream.readShort()
         for (var i = 0; i < player_count; i++) {
-            const data = readUpdatePlayerFromStream(stream);            
+            const data = readUpdatePlayerFromStream(stream)         
             const player = this.scene.players.get(data.id)
             if (player != null) {
-                player.applyServerUpdate(data);
+                console.debug(data)
+                player.applyServerUpdate(data)
             }
         }
     }
@@ -113,6 +114,7 @@ export class Client {
         const count = stream.readShort();
         for (var i = 0; i < count; i++) {
             const data = readInitialPlayerFromStream(stream);
+            console.log("player with", data, "joined")
             const player = this.scene.addPlayer(data);
             if (this.player == null && player.id == this.playerId) {
                 this.player = player
@@ -179,13 +181,15 @@ export class PlayerInputHandler extends GameObjects.GameObject {
     private player: Player
     constructor(scene: Scene, private client: Client) {
         super(scene, 'player-input-handler')
-        this.pointer = this.scene.input.activePointer
+        this.pointer = this.scene.game.input.activePointer
         this.player = client.player
-    }
-
-    preUpdate() {
-        const dx = this.pointer.worldX - this.player.x
-        const dy = this.pointer.worldY - this.player.y
-        this.client.setPlayerInput(dx, dy)
+        this.scene.input.setPollAlways()
+        this.scene.input.on('pointermove', () => {
+            const p = scene.cameras.main.getWorldPoint(this.pointer.x, this.pointer.y)
+            const dx = p.x - this.player.x
+            const dy = p.y - this.player.y
+            console.debug(dx, dy)
+            client.setPlayerInput(dx, dy)
+        })
     }
 }

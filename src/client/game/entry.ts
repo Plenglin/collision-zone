@@ -9,6 +9,7 @@ const PHASER_CONFIG = {
         mode: Phaser.Scale.RESIZE,
         resizeInterval: 500
     },
+    inputMouse: true,
     scene: GameScene
 }
 
