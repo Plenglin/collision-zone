@@ -55,6 +55,8 @@ namespace snowplowderby::game {
     
             void clear_event_buffers();
 
+            std::vector<PlayerPtr> get_new_players();
+
             /**
              * Submit a request to this arena. The lifetime of this object is managed by the Arena.
              * The request will be deleted upon fulfillment.
