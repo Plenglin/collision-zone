@@ -82,7 +82,8 @@ export class GameScene extends Scene {
     addPlayer(data: InitialPlayer): Player {
         const player = new Player(this, data)
         this.add.existing(player)
-        this.players.set(player.id, player);
+        this.players.set(player.id, player)
+        console.info(this.players)
         return player
     }
 
