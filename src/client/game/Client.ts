@@ -1,5 +1,5 @@
 import { ByteArrayInputStream } from "../../util";
-import { Player } from "./Player";
+import { Player, readUpdatePlayerFromStream, readInitialPlayerFromStream } from "./Player";
 import { Wall } from "./Wall";
 import { GameScene } from "./GameScene";
 
@@ -64,7 +64,14 @@ export class Client {
     }
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
-
+        const player_count = stream.readShort();
+        for (var i = 0; i < player_count; i++) {
+            const data = readUpdatePlayerFromStream(stream);            
+            const player = this.scene.players.get(data.id)
+            if (player != null) {
+                player.applyServerUpdate(data);
+            }
+        }
     }
 
     private readTransitionResponse(stream: ByteArrayInputStream) {
@@ -108,7 +115,13 @@ export class Client {
             const wall = Wall.readFromStream(this.scene, stream)
             this.scene.addWall(wall)
         }
-        // players initialization
+
+        const playerCount = stream.readShort();
+        console.debug("Reading", playerCount, "players")
+        for (var i = 0; i < playerCount; i++) {
+            const data = readInitialPlayerFromStream(stream)
+            this.scene.addPlayer(data)
+        }
     }
 
 }
