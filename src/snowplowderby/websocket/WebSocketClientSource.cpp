@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "snowplowderby/constants.hpp"
+#include "snowplowderby/game/Arena.hpp"
 #include "util/util.hpp"
 
 
@@ -52,21 +53,27 @@ void WebSocketClientSource::set_up_handlers() {
 
 void WebSocketClientSource::update() {  
     LOG_TRACE(logger) << "Sending update packets to clients";
-    std::stringstream new_players_payload;
+
+    // Send new player events if necessary
     auto new_players = arena->get_new_players();
     const unsigned short new_player_count = new_players.size();
-    const char buffer[] = {0x41, (char)new_player_count, (char)(new_player_count >> 8)};
+    if (new_player_count > 0) {
+        std::stringstream new_players_payload;
+        const char buffer[] = {EVENT_CODE_PLAYER_JOIN, (char) new_player_count, (char) (new_player_count >> 8)};
 
-    new_players_payload.write(buffer, 3);
-    for (auto it = new_players.begin(); it != new_players.end(); it++) {
-        (*it)->write_initial_bytes(new_players_payload);
+        new_players_payload.write(buffer, 3);
+        for (auto it = new_players.begin(); it != new_players.end(); it++) {
+            (*it)->write_initial_bytes(new_players_payload);
+        }
+        for (auto it = clients.begin(); it != clients.end(); it++) {
+            (*it)->send_binary_reliable(new_players_payload.str());
+        }
     }
 
+    // Send the standard update payload
     std::stringstream update_payload;
     arena->write_update_bytes(update_payload);
-
     for (auto it = clients.begin(); it != clients.end(); it++) {
-        (*it)->send_binary_reliable(new_players_payload.str());
         (*it)->send_binary_unreliable(update_payload.str());
     }
 }

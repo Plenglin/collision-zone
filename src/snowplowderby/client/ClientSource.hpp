@@ -5,10 +5,10 @@
 
 #include "snowplowderby/game/Arena.hpp"
 
-using namespace snowplowderby::game;
 
 namespace snowplowderby::client {
-    
+
+    using namespace snowplowderby::game;
     class ClientSource {
     protected:
         ArenaPtr arena;
