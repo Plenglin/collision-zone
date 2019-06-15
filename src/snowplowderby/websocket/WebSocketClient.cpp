@@ -147,7 +147,12 @@ void WebSocketClient::handle_message_playing(connection_hdl handle, WSPPConnecti
             break;
         }
     } else {  // unreliable
-        stream >> cmd_type;
+        float dx;
+        float dy;
+        stream.read(reinterpret_cast<char*>(&dx), 4);
+        stream.read(reinterpret_cast<char*>(&dy), 4);
+
+        LOG_TRACE(logger) << "Received client input " << dx << ", " << dy;
     }
 }
 
