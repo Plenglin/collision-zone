@@ -58,6 +58,17 @@ export class GameScene extends Scene {
         console.info("GAME PHASE: Create")
         const cam = this.cameras.main
         cam.zoom = 64
+
+        const s = this.add.sprite(0, 0, 'truck')
+        s.setDisplaySize(1, 1)
+        s.setPosition(0, 0)
+        s.angle = 45
+        this.add.circle(0, 0, 0.02, 0xff0000)
+
+        this.scale.addListener(Phaser.Scale.Events.RESIZE, (size: any) => {
+            cam.setSize(size.width, size.height)
+            cam.centerToSize()
+        })
     }
     update() {
         const cam = this.cameras.main
