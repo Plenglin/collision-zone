@@ -17,7 +17,7 @@ export class Player extends GameObjects.Sprite {
 
     constructor(scene: Scene, data: InitialPlayer) {
         super(scene, data.x, data.y, 'truck')
-        this.setDisplaySize(1, 1)
+        this.setDisplaySize(10, 10)
         this.id = data.id
         this.car_class = data.car_class
         this.name = data.name
@@ -59,14 +59,14 @@ export interface UpdatePlayer {
 }
 
 export function readUpdatePlayerFromStream(stream: ByteArrayInputStream): UpdatePlayer {
-    const id = stream.readShort();
-    const x = stream.readFloat();
-    const y = stream.readFloat();
-    const a = stream.readFloat();
-    const vx = stream.readFloat();
-    const vy = stream.readFloat();
-    const omega = stream.readFloat();
-    const flags = stream.readByte();
+    const id = stream.readShort()
+    const x = stream.readFloat() * 10
+    const y = stream.readFloat() * 10
+    const a = stream.readFloat()
+    const vx = stream.readFloat() * 10
+    const vy = stream.readFloat() * 10
+    const omega = stream.readFloat()
+    const flags = stream.readByte()
 
     return {
         id: id, 
