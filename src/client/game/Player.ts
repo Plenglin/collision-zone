@@ -9,6 +9,7 @@ export class Player extends GameObjects.Sprite {
     angle: number
     vx: number
     vy: number
+    omega: number
     alive: boolean
     boosting: boolean
     car_class: integer
@@ -16,7 +17,7 @@ export class Player extends GameObjects.Sprite {
 
     constructor(scene: Scene, data: InitialPlayer) {
         super(scene, data.x, data.y, 'truck')
-        this.setScale(1.0 / 64)
+        this.setDisplaySize(1, 1)
         this.id = data.id
         this.car_class = data.car_class
         this.name = data.name
@@ -31,8 +32,18 @@ export class Player extends GameObjects.Sprite {
         this.setPosition(data.x, data.y)
         this.vx = data.vx
         this.vy = data.vy
+        this.omega = data.omega
         this.alive = (data.flags & ALIVE_FLAG) != 0
         this.boosting = (data.flags & BOOSTING_FLAG) != 0
+    }
+
+    preUpdate(time: number, delta: number) {
+        super.preUpdate(time, delta)
+
+        const dts = delta / 1000
+        this.rotation += this.omega * dts
+        this.x += this.vx * dts
+        this.y += this.vy * dts
     }
 }
 
@@ -43,6 +54,7 @@ export interface UpdatePlayer {
     angle: number
     vx: number
     vy: number
+    omega: number
     flags: integer
 }
 
@@ -53,6 +65,7 @@ export function readUpdatePlayerFromStream(stream: ByteArrayInputStream): Update
     const a = stream.readFloat();
     const vx = stream.readFloat();
     const vy = stream.readFloat();
+    const omega = stream.readFloat();
     const flags = stream.readByte();
 
     return {
@@ -62,6 +75,7 @@ export function readUpdatePlayerFromStream(stream: ByteArrayInputStream): Update
         angle: a, 
         vx: vx,
         vy: vy, 
+        omega: omega,
         flags: flags
     }
 }
