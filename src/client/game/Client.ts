@@ -149,7 +149,7 @@ export class Client {
         for (var i = 0; i < wallCount; i++) {
             const wall = Wall.readFromStream(this.scene, stream)
             this.scene.addWall(wall)
-            this.scene.add.circle(wall.x, wall.y, 0.1, 0xff0000)
+            this.scene.add.circle(wall.x, wall.y, 0.1, 0x0000ff)
             const cent = wall.getCenter()
             this.scene.add.circle(cent.x, cent.y, 0.1, 0x00ff00)
         }
