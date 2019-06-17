@@ -1,8 +1,9 @@
 import { GameObjects, Scene, Game } from "phaser"
 import { ByteArrayInputStream } from "../../util";
 
-const ALIVE_FLAG = 1
-const BOOSTING_FLAG = 2
+const ALIVE_FLAG = 0x01
+const BRAKING_FLAG = 0x02
+const BOOSTING_FLAG = 0x04
 
 export class Player extends GameObjects.Sprite {
     id: integer
@@ -11,6 +12,7 @@ export class Player extends GameObjects.Sprite {
     vy: number
     omega: number
     alive: boolean
+    braking: boolean
     boosting: boolean
     car_class: integer
     name: string
@@ -22,6 +24,7 @@ export class Player extends GameObjects.Sprite {
         this.car_class = data.car_class
         this.name = data.name
         this.applyServerUpdate(data)
+        this.tintFill = true
     }
 
     applyServerUpdate(data: UpdatePlayer) {
@@ -34,6 +37,7 @@ export class Player extends GameObjects.Sprite {
         this.vy = data.vy
         this.omega = data.omega
         this.alive = (data.flags & ALIVE_FLAG) != 0
+        this.braking = (data.flags & BRAKING_FLAG) != 0
         this.boosting = (data.flags & BOOSTING_FLAG) != 0
     }
 
@@ -44,6 +48,16 @@ export class Player extends GameObjects.Sprite {
         this.rotation += this.omega * dts
         this.x += this.vx * dts
         this.y += this.vy * dts
+
+        if (!this.alive) {
+            this.setTintFill(0x666666)
+        } else if (this.boosting) {
+            this.setTintFill(0xffff00)
+        } else if (this.braking) {
+            this.setTintFill(0x000066)
+        } else {
+            this.setTintFill(0xffffff)
+        }
     }
 }
 
