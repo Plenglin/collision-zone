@@ -1,8 +1,8 @@
 const path = require('path')
+const BrotliGzipPlugin = require('brotli-gzip-webpack-plugin');
 const webpack = require('webpack')
 
 module.exports = {
-    mode: 'development',
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         modules: [
@@ -13,7 +13,7 @@ module.exports = {
     entry: {
         game: './src/client/game/entry.ts'
     },
-    devtool: 'inline-source-map',
+    devtool: '',
     module: {
         rules: [{
             test: /\.tsx?$/,
@@ -24,5 +24,36 @@ module.exports = {
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/scripts')
+    },
+    plugins: [
+        new BrotliGzipPlugin({
+            asset: '[path].br[query]',
+            algorithm: 'brotli',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8,
+            quality: 11
+        }),
+        new BrotliGzipPlugin({
+            asset: '[path].gz[query]',
+            algorithm: 'gzip',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
+        })
+    ],
+    optimization: {
+        minimize: true,
+        removeAvailableModules: true,
+        concatenateModules: true,
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                }
+            }
+        }
     }
 }

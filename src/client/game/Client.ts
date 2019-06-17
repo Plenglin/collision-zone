@@ -101,7 +101,7 @@ export class Client {
                 this.playerId = stream.readShort()
                 console.log("Received player id", this.playerId)
                 const self = this
-                this.sendPlayerTask = <any> setInterval(() => self.sendPlayerInput(), 50)
+                this.sendPlayerTask = <any> setInterval(() => self.sendPlayerInput(), 100)
                 this.resolveTransitionRequest(null)
                 return;
             case 1:
@@ -166,8 +166,8 @@ export class Client {
         const buf = new ArrayBuffer(9)
         const dv = new DataView(buf)
         dv.setUint8(0, 117)
-        dv.setFloat32(1, this.playerDx, true)
-        dv.setFloat32(5, this.playerDy, true)
+        dv.setFloat32(1, this.playerDx / 10, true)
+        dv.setFloat32(5, this.playerDy / 10, true)
         // console.debug("sending", this.playerDx, this.playerDy)
         this.socket.send(buf)
     }
