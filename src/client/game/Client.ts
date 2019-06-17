@@ -165,7 +165,7 @@ export class Client {
     private sendPlayerInput() {
         const buf = new ArrayBuffer(9)
         const dv = new DataView(buf)
-        dv.setUint8(0, 117)
+        dv.setUint8(0, 117)  // unreliable
         dv.setFloat32(1, this.playerDx / 10, true)
         dv.setFloat32(5, this.playerDy / 10, true)
         // console.debug("sending", this.playerDx, this.playerDy)
@@ -181,6 +181,24 @@ export class Client {
         this.scene.cameras.main.startFollow(this.player)
         const ih = new PlayerInputHandler(this.scene, this)
         this.scene.add.existing(ih)
+    }
+
+    sendBoost() {
+        const abuf = new ArrayBuffer(2)
+        const view = new DataView(abuf)
+        view.setUint8(0, 114)  // reliable
+        view.setUint8(1, 0x52)  // event_code
+        this.socket.send(abuf)
+    }
+
+    sendBrake(braking: boolean) {
+        const abuf = new ArrayBuffer(3)
+        const view = new DataView(abuf)
+        view.setUint8(0, 114)  // reliable
+        view.setUint8(1, 0x32)  // event_code
+        console.debug(braking)
+        view.setUint8(2, braking ? 0x01 : 0x00)
+        this.socket.send(abuf)
     }
 
 }
@@ -206,12 +224,35 @@ export class PlayerInputHandler extends GameObjects.GameObject {
         //     client.setPlayerInput(dx, dy)
         // })
 
-        $('body').mousemove((event) => {
+        const receiver = $('body')
+        receiver.mousemove((event) => {
             const p = scene.cameras.main.getWorldPoint(event.pageX, event.pageY)
             const dx = p.x - this.player.x
             const dy = p.y - this.player.y
             // console.debug(dx, dy)
             client.setPlayerInput(dx, dy)
+        })
+        receiver.mousedown((event) => {
+            console.debug(event)
+            switch (event.button) {
+                case 0:  // Left
+                    client.sendBoost()
+                    break;
+                case 2:  // Right
+                    client.sendBrake(true)
+                    break;
+            }
+        })
+        receiver.mouseup((event) => {
+            console.debug(event)
+            switch (event.button) {
+                case 2:  // Right
+                    client.sendBrake(false)
+                    break;
+            }
+        })
+        receiver.bind('contextmenu', (event) => {
+            return false
         })
     }
 }
