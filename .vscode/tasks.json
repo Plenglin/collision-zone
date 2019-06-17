@@ -18,6 +18,13 @@
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "type": "npm",
+            "script": "webpack-watch",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
         }
     ]
 }

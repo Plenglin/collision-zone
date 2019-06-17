@@ -1,8 +1,14 @@
 const path = require('path')
 const BrotliGzipPlugin = require('brotli-gzip-webpack-plugin');
 const webpack = require('webpack')
+const process = require('process')
 
-module.exports = {
+
+const env = process.env.NODE_ENV
+
+const cfg = {
+    mode: 'production',
+    devtool: false,
     resolve: {
         extensions: ['.ts', '.js', '.json'],
         modules: [
@@ -13,7 +19,6 @@ module.exports = {
     entry: {
         game: './src/client/game/entry.ts'
     },
-    devtool: '',
     module: {
         rules: [{
             test: /\.tsx?$/,
@@ -40,7 +45,7 @@ module.exports = {
             test: /\.(js|css|html|svg)$/,
             threshold: 10240,
             minRatio: 0.8
-        })
+        }),
     ],
     optimization: {
         minimize: true,
@@ -57,3 +62,12 @@ module.exports = {
         }
     }
 }
+
+if (cfg.mode == 'development') {
+    //cfg.plugins.push(new webpack.EvalSourceMapDevToolPlugin({
+    //    //filename: '[name].js.map',
+    //    exclude: /vendors.*.*/
+    //}))
+}
+
+module.exports = cfg

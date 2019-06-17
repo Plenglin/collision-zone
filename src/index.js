@@ -13,6 +13,7 @@ const app = express()
 app.get('/', (req, res) => {
     res.sendFile(ROOT + '/public/views/game.html')
 })
+
 app.get('/data/server-info', (req, res) => {
     res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify(SERVER_INFO))
@@ -25,9 +26,6 @@ app.use('/static/scripts', expressStaticGzip('./public/scripts', {
         res.setHeader("Cache-Control", "public, max-age=31536000");
     }
 }))
-// app.use('/static/scripts/bootstrap', express.static('./node_modules/bootstrap/dist/js'))
-// app.use('/static/scripts/jquery', express.static('./node_modules/jquery/dist'))
-// app.use('/static/scripts/phaser', express.static('./node_modules/phaser/dist'))
 
 app.use('/static/styles', express.static('./public/styles'))
 app.use('/static/styles/bootstrap', express.static('./node_modules/bootstrap/dist/css'))

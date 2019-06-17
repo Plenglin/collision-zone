@@ -81,12 +81,9 @@ export class Client {
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
         const player_count = stream.readShort()
-        // console.debug("reading", player_count, "players")
         for (var i = 0; i < player_count; i++) {
             const data = readUpdatePlayerFromStream(stream)         
             const player = this.scene.players.get(data.id)
-            // console.debug("player update", data)
-            // console.debug("existing", player)
             if (player != undefined) {
                 player.applyServerUpdate(data)
             }
