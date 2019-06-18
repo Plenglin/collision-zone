@@ -1,7 +1,10 @@
 const path = require('path')
-const BrotliGzipPlugin = require('brotli-gzip-webpack-plugin');
 const webpack = require('webpack')
 const process = require('process')
+
+const TerserPlugin = require('terser-webpack-plugin')
+const BrotliGzipPlugin = require('brotli-gzip-webpack-plugin')
+const BabelPlugin = require("babel-webpack-plugin")
 
 
 const env = process.env.NODE_ENV
@@ -48,6 +51,17 @@ const cfg = {
         }),
     ],
     optimization: {
+        minimizer: [new TerserPlugin({
+            cache: true,
+            terserOptions: {
+                mangle: {
+                    toplevel: true,
+                    properties: true,
+                }, 
+                keep_fnames: false,
+                keep_classnames: false
+            },
+        })],
         minimize: true,
         removeAvailableModules: true,
         concatenateModules: true,
@@ -61,13 +75,6 @@ const cfg = {
             }
         }
     }
-}
-
-if (cfg.mode == 'development') {
-    //cfg.plugins.push(new webpack.EvalSourceMapDevToolPlugin({
-    //    //filename: '[name].js.map',
-    //    exclude: /vendors.*.*/
-    //}))
 }
 
 module.exports = cfg

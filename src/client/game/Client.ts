@@ -81,12 +81,21 @@ export class Client {
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
         const player_count = stream.readShort()
+        const unupdated_players = new Set<integer>()
+
+        for (var id of this.scene.players.keys()) {
+            unupdated_players.add(id)
+        }
         for (var i = 0; i < player_count; i++) {
             const data = readUpdatePlayerFromStream(stream)         
             const player = this.scene.players.get(data.id)
             if (player != undefined) {
                 player.applyServerUpdate(data)
             }
+            unupdated_players.delete(player.id)
+        }
+        for (var id of unupdated_players) {
+            this.scene.players.get(id).destroy()
         }
     }
 
