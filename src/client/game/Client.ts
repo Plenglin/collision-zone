@@ -95,7 +95,9 @@ export class Client {
             unupdated_players.delete(player.id)
         }
         for (var id of unupdated_players) {
+            console.debug(id, "was not updated")
             this.scene.players.get(id).destroy()
+            this.scene.players.delete(id)
         }
     }
 
