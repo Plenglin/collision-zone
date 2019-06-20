@@ -65,7 +65,7 @@ export class Client {
             const channel_type = stream.readByte()  // temporary measure for the protocol
             if (channel_type == 117) {  // unreliable
                 this.readPeriodicGameUpdate(stream)
-            } else {
+            } else if (channel_type == 114) {  // reliable
                 const event_type = stream.readByte()
                 switch (event_type) {
                     case 0x01:  // Transition response
@@ -144,12 +144,18 @@ export class Client {
 
     private async readInitializationMessage(blob: Blob) {
         const data = await new Response(blob).arrayBuffer()
-        console.debug("Received initialization message", data)
-        this.setSpectating()
+        console.debug("Received potential initialization message", data)
 
         const stream = new ByteArrayInputStream(data)
         stream.readByte()  // clear u/r
-        stream.readByte()  // clear event_code
+        const event_code = stream.readByte()  // clear event_code
+
+        if (event_code != 0x5) {
+            console.warn("Message was NOT an initialization message! Ignoring.")
+            return;
+        }
+
+        this.setSpectating()
 
         const version = stream.readStringUntilNull()
         console.info("Server version ", version)
