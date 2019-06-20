@@ -63,15 +63,17 @@ export class Client {
             const stream = new ByteArrayInputStream(buf)
 
             const channel_type = stream.readByte()  // temporary measure for the protocol
+            console.log(channel_type)
             if (channel_type == 117) {  // unreliable
                 this.readPeriodicGameUpdate(stream)
             } else if (channel_type == 114) {  // reliable
                 const event_type = stream.readByte()
+                console.debug("received reliable message", data.data)
                 switch (event_type) {
                     case 0x01:  // Transition response
                         this.readTransitionResponse(stream)
                         break;
-                    case 0x41:
+                    case 0x41:  // player join
                         this.readPlayerJoinedEvent(stream)
                     default:
                         break;
@@ -82,10 +84,10 @@ export class Client {
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {
         const player_count = stream.readShort()
-        const unupdated_players = new Set<integer>()
+        const unupdated_players = new Map<integer, boolean>()
 
         for (var id of this.scene.players.keys()) {
-            unupdated_players.add(id)
+            unupdated_players.set(id, true)
         }
         for (var i = 0; i < player_count; i++) {
             const data = readUpdatePlayerFromStream(stream)         
@@ -93,9 +95,9 @@ export class Client {
             if (player != undefined) {
                 player.applyServerUpdate(data)
             }
-            unupdated_players.delete(player.id)
+            unupdated_players.delete(data.id)
         }
-        for (var id of unupdated_players) {
+        for (var id of unupdated_players.keys()) {
             console.debug(id, "was not updated")
             this.scene.players.get(id).destroy()
             this.scene.players.delete(id)
@@ -131,6 +133,7 @@ export class Client {
 
     private async readPlayerJoinedEvent(stream: ByteArrayInputStream) {
         const count = stream.readShort();
+        console.info("Reading", count, "new players")
         for (var i = 0; i < count; i++) {
             const data = readInitialPlayerFromStream(stream)
             console.log("player with", data, "joined")
@@ -196,7 +199,9 @@ export class Client {
     }
 
     private onThisPlayerCreated() {
-        this.scene.cameras.main.startFollow(this.player)
+        const cam = this.scene.cameras.main
+        cam.startFollow(this.player)
+        cam.zoom = 6
         const ih = new PlayerInputHandler(this.scene, this)
         this.scene.add.existing(ih)
     }

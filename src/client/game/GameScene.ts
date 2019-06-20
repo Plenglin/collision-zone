@@ -57,7 +57,7 @@ export class GameScene extends Scene {
     create() {
         console.info("GAME PHASE: Create")
         const cam = this.cameras.main
-        cam.zoom = 6
+        cam.zoom = 1
 
         this.scale.addListener(Phaser.Scale.Events.RESIZE, (size: any) => {
             cam.setSize(size.width, size.height)
