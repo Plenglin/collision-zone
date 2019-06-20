@@ -45,6 +45,7 @@ export class Client {
     private setUninitialized() {
         this.state = ClientState.UNINITIALIZED
         this.socket.onmessage = (data) => {
+            console.info('Received init data', data)
             this.readInitializationMessage(data.data)
         }
         this.socket.onclose = (data) => {
@@ -148,6 +149,7 @@ export class Client {
 
         const stream = new ByteArrayInputStream(data)
         stream.readByte()  // clear u/r
+        stream.readByte()  // clear event_code
 
         const version = stream.readStringUntilNull()
         console.info("Server version ", version)
@@ -168,14 +170,16 @@ export class Client {
             const data = readInitialPlayerFromStream(stream)
             this.scene.addPlayer(data)
         }
+        this.socket.send('rk')  // reliable, acknowledge
     }
 
     private sendPlayerInput() {
-        const buf = new ArrayBuffer(9)
+        const buf = new ArrayBuffer(10)
         const dv = new DataView(buf)
         dv.setUint8(0, 117)  // unreliable
-        dv.setFloat32(1, this.playerDx / 10, true)
-        dv.setFloat32(5, this.playerDy / 10, true)
+        dv.setUint8(1, 0x3a)  // set_input command code
+        dv.setFloat32(2, this.playerDx / 10, true)
+        dv.setFloat32(6, this.playerDy / 10, true)
         // console.debug("sending", this.playerDx, this.playerDy)
         this.socket.send(buf)
     }
