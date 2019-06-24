@@ -24,8 +24,15 @@ export class Player extends GameObjects.Container {
     dead_particle_manager: GameObjects.Particles.ParticleEmitterManager
     dead_particle_emitter: GameObjects.Particles.ParticleEmitter
 
+    text: GameObjects.Text
+
     constructor(scene: Scene, data: InitialPlayer) {
         super(scene, data.x, data.y)
+        this.id = data.id
+        this.car_class = data.car_class
+        this.name = data.name
+        this.applyServerUpdate(data)
+
         this.alive_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-alive')
         this.invuln_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-invuln')
         this.dead_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-dead')
@@ -37,6 +44,10 @@ export class Player extends GameObjects.Container {
         this.add(this.alive_sprite)
         this.add(this.invuln_sprite)
         this.add(this.dead_sprite)
+
+        this.text = scene.add.text(0, 0, this.name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
+        this.text.scale = 0.15
+        this.text.setOrigin(0.5)
 
         this.dead_particle_manager = this.scene.add.particles('dead-particle')
         this.boost_particle_manager = this.scene.add.particles('boost-particle')
@@ -59,11 +70,6 @@ export class Player extends GameObjects.Container {
     
         this.dead_particle_emitter.stop()
         this.boost_particle_emitter.stop()
-
-        this.id = data.id
-        this.car_class = data.car_class
-        this.name = data.name
-        this.applyServerUpdate(data)
     }
 
     applyServerUpdate(data: UpdatePlayer) {
@@ -78,7 +84,18 @@ export class Player extends GameObjects.Container {
         this.alive = (data.flags & ALIVE_FLAG) != 0
         this.braking = (data.flags & BRAKING_FLAG) != 0
         this.boosting = (data.flags & BOOSTING_FLAG) != 0
+    }
 
+    preUpdate(time: number, delta: number) {
+        const dts = delta / 1000
+        this.rotation += this.omega * dts
+        this.x += this.vx * dts
+        this.y += this.vy * dts
+
+        const emitAngle = -Math.atan2(this.vy, this.vy) * 180 / Math.PI 
+        this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
+
+        this.text.setPosition(this.x, this.y - 10)
         if (!this.alive) {
             this.dead_sprite.setVisible(true)
             this.dead_particle_emitter.start()
@@ -90,16 +107,6 @@ export class Player extends GameObjects.Container {
         }
     }
 
-    preUpdate(time: number, delta: number) {
-        const dts = delta / 1000
-        this.rotation += this.omega * dts
-        this.x += this.vx * dts
-        this.y += this.vy * dts
-
-        const emitAngle = -Math.atan2(this.vy, this.vy) * 180 / Math.PI 
-        this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
-    }
-
     preDestroy() {
         super.preDestroy()
         this.dead_particle_emitter.stop()
@@ -107,6 +114,7 @@ export class Player extends GameObjects.Container {
             this.dead_particle_manager.destroy()
             this.boost_particle_manager.destroy()            
         }, [], this)
+        this.text.destroy()
     }
 }
 
@@ -152,6 +160,7 @@ export function readInitialPlayerFromStream(stream: ByteArrayInputStream): Initi
     const data = <InitialPlayer> readUpdatePlayerFromStream(stream)
     data.car_class = stream.readByte()
     data.name = stream.readStringUntilNull()
+    console.log(data.name)
     return data
 }
 
