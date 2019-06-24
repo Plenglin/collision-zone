@@ -42,6 +42,11 @@ export class GameScene extends Scene {
         this.load.image("boost-particle", "static/images/boost-particle.png")
         this.load.image("dead-particle", "static/images/dead-particle.png")
 
+        $('#field-username').keyup((event) => {
+            if (event.keyCode === 13) {
+                $("#btn-play").click();
+            }
+        })
         const btn = $('#btn-play')
         btn.click(async () => {
             if (btn.hasClass("disabled")) {
