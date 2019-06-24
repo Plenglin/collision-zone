@@ -1,4 +1,4 @@
-import { Scene } from "phaser"
+import { Scene, GameObjects } from "phaser"
 import { Player, InitialPlayer } from "client/game/Player"
 import { Client, ClientState } from 'client/game/Client'
 
@@ -11,8 +11,11 @@ export class GameScene extends Scene {
     players: Map<integer, Player> = new Map()
     walls: Wall[] = []
 
-    private spectateX: number;
-    private spectateY: number;
+    private spectateX: number
+    private spectateY: number
+
+    private boostParticleManager: GameObjects.Particles.ParticleEmitterManager
+    private deadParticleManager: GameObjects.Particles.ParticleEmitterManager
 
     constructor() {
         super('GameScene')
@@ -32,8 +35,13 @@ export class GameScene extends Scene {
         console.info("Base URL set to ", baseUrl)
         this.connectToclient()
         this.load.setBaseURL(baseUrl)
-        this.load.image("truck", "static/images/truck.png")
-        
+        this.load.image("truck-alive", "static/images/truck-alive.png")
+        this.load.image("truck-dead", "static/images/truck-dead.png")
+        this.load.image("truck-invuln", "static/images/truck-invuln-frame.png")
+        this.load.image("boost-layer", "static/images/boost-layer.png")
+        this.load.image("boost-particle", "static/images/boost-particle.png")
+        this.load.image("dead-particle", "static/images/dead-particle.png")
+
         const btn = $('#btn-play')
         btn.click(async () => {
             if (btn.hasClass("disabled")) {
@@ -88,7 +96,7 @@ export class GameScene extends Scene {
         const player = new Player(this, data)
         this.add.existing(player)
         this.players.set(player.id, player)
-        console.info(this.players)
+        // console.info(this.players)
         return player
     }
 
