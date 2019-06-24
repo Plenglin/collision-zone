@@ -74,11 +74,32 @@ export class Client {
                         break;
                     case 0x41:  // player join
                         this.readPlayerJoinedEvent(stream)
+                        break;
+                    case 0x90:  // kills
+                        this.readPlayerKilledEvent(stream)
+                        break;
                     default:
                         break;
                 }
             }
         }
+    }
+
+    private readPlayerKilledEvent(stream: ByteArrayInputStream) {
+        const count = stream.readShort()
+        console.log("Reading", count, "kill events")
+        const deadPlayers: Array<integer> = []
+        for (var i = 0; i < count; i++) {
+            const killerID = stream.readShort()
+            const victimID = stream.readShort()
+            const killerKills = stream.readShort()
+            this.scene.players.get(killerID).kills = killerKills
+            console.info(this.scene.players.get(killerID).name, "killed", this.scene.players.get(victimID).name)
+            deadPlayers.push(victimID)
+        }
+
+        this.scene.highScores = this.scene.highScores.filter(p => deadPlayers.find(q => q === p.id) == undefined)
+        this.scene.highScores.sort((a, b) => a.kills - b.kills)
     }
 
     private readPeriodicGameUpdate(stream: ByteArrayInputStream) {

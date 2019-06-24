@@ -11,6 +11,8 @@ export class GameScene extends Scene {
     players: Map<integer, Player> = new Map()
     walls: Wall[] = []
 
+    highScores: Array<Player> = []
+
     private spectateX: number
     private spectateY: number
 
