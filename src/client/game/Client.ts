@@ -63,7 +63,6 @@ export class Client {
             const stream = new ByteArrayInputStream(buf)
 
             const channel_type = stream.readByte()  // temporary measure for the protocol
-            console.log(channel_type)
             if (channel_type == 117) {  // unreliable
                 this.readPeriodicGameUpdate(stream)
             } else if (channel_type == 114) {  // reliable
