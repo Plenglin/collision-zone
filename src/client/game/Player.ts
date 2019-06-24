@@ -15,6 +15,7 @@ export class Player extends GameObjects.Container {
     boosting: boolean
     car_class: integer
     name: string
+    kills: integer
 
     alive_sprite: GameObjects.Sprite
     invuln_sprite: GameObjects.Sprite
@@ -84,6 +85,8 @@ export class Player extends GameObjects.Container {
         this.alive = (data.flags & ALIVE_FLAG) != 0
         this.braking = (data.flags & BRAKING_FLAG) != 0
         this.boosting = (data.flags & BOOSTING_FLAG) != 0
+
+        this.text.setText(`${this.name} (${this.kills})`)
     }
 
     preUpdate(time: number, delta: number) {
