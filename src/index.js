@@ -2,7 +2,7 @@ const express = require('express')
 const expressStaticGzip = require('express-static-gzip')
 const path = require('path')
 
-const PORT = 3000
+const PORT = 80
 const SERVER_INFO = {
     url: 'ws://localhost:42069'
 }
