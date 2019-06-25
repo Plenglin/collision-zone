@@ -14,7 +14,7 @@ export class Player extends GameObjects.Container {
     braking: boolean
     boosting: boolean
     car_class: integer
-    name: string
+    player_name: string
     kills: integer
 
     alive_sprite: GameObjects.Sprite
@@ -29,10 +29,6 @@ export class Player extends GameObjects.Container {
 
     constructor(scene: Scene, data: InitialPlayer) {
         super(scene, data.x, data.y)
-        this.id = data.id
-        this.car_class = data.car_class
-        this.name = data.name
-        this.applyServerUpdate(data)
 
         this.alive_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-alive')
         this.invuln_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-invuln')
@@ -46,7 +42,8 @@ export class Player extends GameObjects.Container {
         this.add(this.invuln_sprite)
         this.add(this.dead_sprite)
 
-        this.text = scene.add.text(0, 0, this.name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
+        this.text = scene.add.text(0, 0, this.player_name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
+        //console.log(this.text)
         this.text.scale = 0.15
         this.text.setOrigin(0.5)
 
@@ -71,6 +68,12 @@ export class Player extends GameObjects.Container {
     
         this.dead_particle_emitter.stop()
         this.boost_particle_emitter.stop()
+
+        this.id = data.id
+        this.car_class = data.car_class
+        this.player_name = data.name
+        this.kills = data.kills
+        this.applyServerUpdate(data)
     }
 
     applyServerUpdate(data: UpdatePlayer) {
@@ -86,7 +89,8 @@ export class Player extends GameObjects.Container {
         this.braking = (data.flags & BRAKING_FLAG) != 0
         this.boosting = (data.flags & BOOSTING_FLAG) != 0
 
-        this.text.setText(`${this.name} (${this.kills})`)
+        //console.log(this.text)
+        this.text.setText(`${this.player_name} (${this.kills})`)
     }
 
     preUpdate(time: number, delta: number) {
@@ -155,15 +159,16 @@ export function readUpdatePlayerFromStream(stream: ByteArrayInputStream): Update
 }
 
 export interface InitialPlayer extends UpdatePlayer {
-    name: string
+    kills: integer
     car_class: integer
+    name: string
 }
 
 export function readInitialPlayerFromStream(stream: ByteArrayInputStream): InitialPlayer {
     const data = <InitialPlayer> readUpdatePlayerFromStream(stream)
     data.car_class = stream.readByte()
+    data.kills = stream.readShort()
     data.name = stream.readStringUntilNull()
-    console.log(data.name)
     return data
 }
 

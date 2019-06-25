@@ -94,7 +94,7 @@ export class Client {
             const victimID = stream.readShort()
             const killerKills = stream.readShort()
             this.scene.players.get(killerID).kills = killerKills
-            console.info(this.scene.players.get(killerID).name, "killed", this.scene.players.get(victimID).name)
+            console.info(this.scene.players.get(killerID).player_name, "killed", this.scene.players.get(victimID).player_name)
             deadPlayers.push(victimID)
         }
 
