@@ -15,6 +15,7 @@ const PHASER_CONFIG = {
     scene: scene
 }
 
+$('#field-username').val(document.cookie)
 $('#player-config-modal').modal('show')
 
 const phaser = new Phaser.Game(PHASER_CONFIG)

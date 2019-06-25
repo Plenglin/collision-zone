@@ -56,7 +56,7 @@ const cfg = {
             terserOptions: {
                 mangle: {
                     toplevel: true,
-                    properties: true,
+                    //properties: true,
                 }, 
                 compress: {
                     drop_console: true,
