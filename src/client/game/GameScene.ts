@@ -109,6 +109,7 @@ export class GameScene extends Scene {
 
     async attemptStartPlay(): Promise<string> {
         const username: string = <string>$('#field-username').val()
+        document.cookie = username
         if (username.length == 0) {
             return 'Username cannot be empty'
         }
