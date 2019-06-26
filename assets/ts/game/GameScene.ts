@@ -1,6 +1,6 @@
 import { Scene, GameObjects } from "phaser"
-import { Player, InitialPlayer } from "client/game/Player"
-import { Client, ClientState } from 'client/game/Client'
+import { Player, InitialPlayer } from "./Player"
+import { Client, ClientState } from './Client'
 
 import * as $ from "jquery"
 import { Wall } from "./Wall";

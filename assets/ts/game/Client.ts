@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import { ByteArrayInputStream } from "../../util";
+import { ByteArrayInputStream } from "../util";
 import { Player, readUpdatePlayerFromStream, readInitialPlayerFromStream } from "./Player";
 import { Wall } from "./Wall";
 import { GameScene } from "./GameScene";

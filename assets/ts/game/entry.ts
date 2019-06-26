@@ -1,4 +1,4 @@
-import { GameScene } from 'client/game/GameScene'
+import { GameScene } from './GameScene'
 import * as $ from 'jquery'
 import 'bootstrap'
 
