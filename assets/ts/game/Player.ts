@@ -1,5 +1,5 @@
 import { GameObjects, Scene, Game } from "phaser"
-import { ByteArrayInputStream } from "../../util";
+import { ByteArrayInputStream } from "../util";
 
 const ALIVE_FLAG = 0x01
 const BRAKING_FLAG = 0x02

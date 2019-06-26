@@ -10,7 +10,6 @@ const BabelPlugin = require("babel-webpack-plugin")
 const env = process.env.NODE_ENV
 
 const cfg = {
-    mode: 'production',
     devtool: false,
     resolve: {
         extensions: ['.ts', '.js', '.json'],
@@ -20,7 +19,7 @@ const cfg = {
         ]
     },
     entry: {
-        game: './src/client/game/entry.ts'
+        game: './assets/ts/game/entry.ts'
     },
     module: {
         rules: [{
@@ -33,26 +32,10 @@ const cfg = {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'public/scripts')
     },
-    plugins: [
-        new BrotliGzipPlugin({
-            asset: '[path].br[query]',
-            algorithm: 'brotli',
-            test: /\.(js|css|html|svg)$/,
-            threshold: 10240,
-            minRatio: 0.8,
-            quality: 11
-        }),
-        new BrotliGzipPlugin({
-            asset: '[path].gz[query]',
-            algorithm: 'gzip',
-            test: /\.(js|css|html|svg)$/,
-            threshold: 10240,
-            minRatio: 0.8
-        }),
-    ],
     optimization: {
         minimizer: [new TerserPlugin({
             cache: true,
+            sourceMap: true,
             terserOptions: {
                 mangle: {
                     toplevel: true,
@@ -77,7 +60,30 @@ const cfg = {
                 }
             }
         }
-    }
+    },
+    plugins: [
+        new webpack.SourceMapDevToolPlugin({
+            filename: '[name].js.map',
+            exclude: [
+                'vendors.bundle.js'
+            ]
+        }),
+        new BrotliGzipPlugin({
+            asset: '[path].br[query]',
+            algorithm: 'brotli',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8,
+            quality: 11
+        }),
+        new BrotliGzipPlugin({
+            asset: '[path].gz[query]',
+            algorithm: 'gzip',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
+        }),
+    ],
 }
 
-module.exports = cfg
+module.exports = cfg
