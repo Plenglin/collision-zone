@@ -86,4 +86,4 @@ const cfg = {
     ],
 }
 
-module.exports = cfg
+module.exports = cfg
