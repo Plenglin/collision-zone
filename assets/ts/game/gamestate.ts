@@ -78,7 +78,7 @@ export class GameState {
     walls: Wall[] = []
     highScores: Array<Player> = []
 
-    static readFromStream(stream: ByteArrayInputStream) {
+    static readFromStream(stream: ByteArrayInputStream): GameState {
         const obj = new GameState()
 
         const version = stream.readStringUntilNull()
@@ -97,6 +97,7 @@ export class GameState {
             const player = Player.readFromStream(stream)
             obj.players.set(player.id, player)
         }
+        return obj
     }
 
     applyUpdatesFromStream(stream: ByteArrayInputStream) {
