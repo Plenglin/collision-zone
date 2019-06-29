@@ -1,9 +1,9 @@
 import { Scene, GameObjects } from "phaser"
-import { Player, InitialPlayer } from "./Player"
-import { Client, ClientState } from './protocol'
+import { Player, InitialPlayer } from "./player"
+import { Client, ClientState } from '../protocol'
 
 import * as $ from "jquery"
-import { Wall } from "./Wall";
+import { Wall } from "./wall";
 
 
 export class GameScene extends Scene {

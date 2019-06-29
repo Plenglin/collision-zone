@@ -1,4 +1,4 @@
-import { GameScene } from './GameScene'
+import { GameScene } from './view/scene'
 import * as $ from 'jquery'
 import 'bootstrap'
 
