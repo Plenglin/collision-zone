@@ -1,6 +1,6 @@
 import { Scene, GameObjects } from "phaser"
 import { Player, InitialPlayer } from "./Player"
-import { Client, ClientState } from './Client'
+import { Client, ClientState } from './protocol'
 
 import * as $ from "jquery"
 import { Wall } from "./Wall";
@@ -81,7 +81,7 @@ export class GameScene extends Scene {
     }
     update() {
         const cam = this.cameras.main
-        switch (this.client.state) {
+        switch (this.client.game_state) {
             case ClientState.SPECTATING:
                 cam.centerOn(0, 0)
                 break;
