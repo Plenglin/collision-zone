@@ -1,10 +1,19 @@
+import { Client } from "./protocol";
+import { GameObjects, Input, Scene } from "phaser";
+import { Player } from "./gamestate";
+
 export class PlayerInputHandler extends GameObjects.GameObject {
     private pointer: Input.Pointer
     private player: Player
+    
     constructor(scene: Scene, private client: Client) {
         super(scene, 'player-input-handler')
+        if (!client.is_player) {
+            throw "Client MUST be a player!"
+        }
+
         this.pointer = this.scene.game.input.activePointer
-        this.player = client.player
+        this.player = client.player as Player
         // this.scene.input.setPollAlways()
         // this.scene.input.on('pointermove', () => {
         //     const p = scene.cameras.main.getWorldPoint(this.pointer.x, this.pointer.y)

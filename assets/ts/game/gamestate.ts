@@ -109,7 +109,7 @@ export class GameState {
         })
         for (var i = 0; i < player_count; i++) {
             const id = stream.readShort()
-            const player = this.players.get(id)
+            const player = this.players.get(id) as Player
             if (player != undefined) {
                 player.applyUpdatesFromStream(stream)
             }
@@ -127,8 +127,9 @@ export class GameState {
             const killerID = stream.readShort()
             const victimID = stream.readShort()
             const killerKills = stream.readShort()
-            this.players.get(killerID).kills = killerKills
-            console.info(this.players.get(killerID).name, "killed", this.players.get(victimID).name)
+            const player_obj = this.players.get(killerID) as Player
+            player_obj.kills = killerKills
+            console.info(player_obj.name, "killed", player_obj.name)
             deadPlayers.push(victimID)
         }
 

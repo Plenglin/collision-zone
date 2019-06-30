@@ -30,13 +30,12 @@ export class Client {
     player_id: integer = 0
     is_player: boolean
     state: ClientState = ClientState.UNINITIALIZED
-    on_open: () => void = () => {}
 
     private send_player_task: any = -1
     private input_x: number = 0
     private input_y: number = 0
     
-    constructor(base_url: string, player_data?: PlayerInitData) {
+    constructor(base_url: string, player_data?: PlayerInitData, private on_active?: () => void) {
         if (player_data) {
             this.url = base_url + `?username=${player_data.username}&class=${player_data.player_class}`
             this.is_player = true
@@ -48,7 +47,6 @@ export class Client {
         
         this.socket.onopen = () => {
             console.info("Socket opened at", this.url)
-            this.on_open()
         }
         this.socket.onmessage = (data) => {
             const stream = new ByteArrayInputStream(new ArrayBuffer(data.data))
@@ -60,12 +58,16 @@ export class Client {
             }
             this.game_state = GameState.readFromStream(stream)
             this.state = ClientState.ACTIVE
+            if (this.on_active != undefined) {
+                this.on_active()
+            }
             this.socket.onmessage = (data) => {
                 const stream = new ByteArrayInputStream(new ArrayBuffer(data.data))
                 this.handle_active_message(stream)
             }
         }
         this.socket.onclose = (ev) => {
+            console.log("Websocket closed", ev)
             clearInterval(this.send_player_task)
             this.state = ClientState.CLOSED
         }
