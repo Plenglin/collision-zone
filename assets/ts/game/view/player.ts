@@ -1,13 +1,7 @@
-import { GameObjects, Scene, Game } from "phaser"
-import { ByteArrayInputStream } from "../../util";
+import { GameObjects, Scene } from "phaser";
+import { GameState, Player } from "../gamestate";
 
-const ALIVE_FLAG = 0x01
-const BRAKING_FLAG = 0x02
-const BOOSTING_FLAG = 0x04
-
-export class Player extends GameObjects.Container {
-    id: integer = 0
-
+export class PlayerRenderer extends GameObjects.Container {
     alive_sprite: GameObjects.Sprite
     invuln_sprite: GameObjects.Sprite
     dead_sprite: GameObjects.Sprite
@@ -18,8 +12,8 @@ export class Player extends GameObjects.Container {
 
     text: GameObjects.Text
 
-    constructor(scene: Scene, data: InitialPlayer) {
-        super(scene, data.x, data.y)
+    constructor(scene: Scene, private game_state: GameState, public player_id: integer) {
+        super(scene)
 
         this.alive_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-alive')
         this.invuln_sprite = new GameObjects.Sprite(scene, 0, 0, 'truck-invuln')
@@ -61,21 +55,29 @@ export class Player extends GameObjects.Container {
         this.boost_particle_emitter.stop()
     }
 
-    preUpdate(time: number, delta: number) {
-        const dts = delta / 1000
-        this.rotation += this.omega * dts
-        this.x += this.vx * dts
-        this.y += this.vy * dts
+    get player(): Player | undefined {
+        return this.game_state.players.get(this.player_id)
+    }
 
-        const emitAngle = -Math.atan2(this.vy, this.vy) * 180 / Math.PI 
+    preUpdate(time: number, delta: number) {
+        const player = this.player
+        if (player == undefined) {
+            return
+        }
+        const dts = delta / 1000
+        this.rotation += player.omega * dts
+        this.x += player.vx * dts
+        this.y += player.vy * dts
+
+        const emitAngle = -Math.atan2(player.vy, player.vy) * 180 / Math.PI 
         this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
 
         this.text.setPosition(this.x, this.y - 10)
-        if (!this.alive) {
+        if (!player.is_alive) {
             this.dead_sprite.setVisible(true)
             this.dead_particle_emitter.start()
         }
-        if (this.boosting) {
+        if (player.is_boosting) {
             this.boost_particle_emitter.start()
         } else {
             this.boost_particle_emitter.stop()

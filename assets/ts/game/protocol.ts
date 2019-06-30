@@ -30,12 +30,13 @@ export class Client {
     player_id: integer = 0
     is_player: boolean
     state: ClientState = ClientState.UNINITIALIZED
+    on_open: () => void = () => {}
 
     private send_player_task: any = -1
     private input_x: number = 0
     private input_y: number = 0
     
-    constructor(base_url: string, private scene: GameScene, player_data?: PlayerInitData) {
+    constructor(base_url: string, player_data?: PlayerInitData) {
         if (player_data) {
             this.url = base_url + `?username=${player_data.username}&class=${player_data.player_class}`
             this.is_player = true
@@ -47,6 +48,7 @@ export class Client {
         
         this.socket.onopen = () => {
             console.info("Socket opened at", this.url)
+            this.on_open()
         }
         this.socket.onmessage = (data) => {
             const stream = new ByteArrayInputStream(new ArrayBuffer(data.data))

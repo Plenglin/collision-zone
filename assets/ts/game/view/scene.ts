@@ -1,41 +1,49 @@
 import { Scene, GameObjects } from "phaser"
-import { Player, InitialPlayer } from "./player"
+import { PlayerRenderer } from "./player"
 import { Client, ClientState } from '../protocol'
 
 import * as $ from "jquery"
-import { Wall } from "./wall";
+import { WallRenderer } from "./wall";
+import { GameState, Wall } from "../gamestate";
 
 
 export class GameScene extends Scene {
-    client: Client = null
-    players: Map<integer, Player> = new Map()
-    walls: Wall[] = []
+    players: Map<integer, PlayerRenderer> = new Map()
+    walls: WallRenderer[] = []
+    gs: GameState
 
-    highScores: Array<Player> = []
+    highScores: Array<PlayerRenderer> = []
 
-    private spectateX: number
-    private spectateY: number
-
-    private boostParticleManager: GameObjects.Particles.ParticleEmitterManager
-    private deadParticleManager: GameObjects.Particles.ParticleEmitterManager
-
-    constructor() {
+    constructor(public client: Client) {
         super('GameScene')
-        this.client = null
-    }
-    connectToclient() {
-        const self = this
-        $.get("/data/server-info", (data: any) => {
-            console.info("Received server info", data)
-            self.client = new Client(data.url, self)
+        if (client.state != ClientState.ACTIVE) {
+            throw "Client must be ACTIVE!"
+        }
+        this.gs = client.game_state as GameState
+
+        this.gs.walls.forEach(w => {
+            this.add_wall(w)
         })
+        this.gs.players.forEach((p, i) => {
+            console.info(p)
+            this.add_player(i)
+        })
+
+        if (client.is_player) {
+            console.log("Client in player mode")
+            const player_obj = this.players.get(client.player_id) as PlayerRenderer
+            this.cameras.main.startFollow(player_obj)
+        } else {
+            console.log("Client in spectator mode")
+            this.cameras.main.centerOn(0, 0)
+        }
     }
+
     preload() {
         console.info("GAME PHASE: Preload")
         const currentUrl = window.location
         var baseUrl = currentUrl.protocol + "//" + currentUrl.host + "/" + currentUrl.pathname.split('/')[1]
         console.info("Base URL set to ", baseUrl)
-        this.connectToclient()
         this.load.setBaseURL(baseUrl)
         this.load.image("truck-alive", "static/images/truck-alive.png")
         this.load.image("truck-dead", "static/images/truck-dead.png")
@@ -43,32 +51,8 @@ export class GameScene extends Scene {
         this.load.image("boost-layer", "static/images/boost-layer.png")
         this.load.image("boost-particle", "static/images/boost-particle.png")
         this.load.image("dead-particle", "static/images/dead-particle.png")
-
-        $('#field-username').keyup((event) => {
-            if (event.keyCode === 13) {
-                $("#btn-play").click();
-            }
-        })
-        const btn = $('#btn-play')
-        btn.click(async () => {
-            if (btn.hasClass("disabled")) {
-                return;
-            }
-
-            btn.addClass('disabled')
-            $('#spinner-connect').show()
-            const error = await this.attemptStartPlay()
-            $('#spinner-connect').hide()
-
-            if (error != null) {
-                // TODO implement an error notification system
-                console.error(error)
-                $('#btn-play').removeClass('disabled')
-            } else {
-                $('#player-config-modal').modal('hide')
-            }
-        })
     }
+
     create() {
         console.info("GAME PHASE: Create")
         const cam = this.cameras.main
@@ -79,35 +63,21 @@ export class GameScene extends Scene {
             cam.centerToSize()
         })
     }
-    update() {
-        const cam = this.cameras.main
-        switch (this.client.game_state) {
-            case ClientState.SPECTATING:
-                cam.centerOn(0, 0)
-                break;
-            case ClientState.PLAYING:
-                const player = this.players.get(this.client.playerId)
-                if (player == undefined) {  // If it hasn't been registered yet
-                    return
-                }
-                break;
-            default:
-                break;
-        }
+
+    add_wall(wall: Wall) {
+        const obj = new WallRenderer(this, wall)
+        this.add.existing(obj)
+        this.walls.push(obj)
     }
-    addWall(wall: Wall) {
-        this.add.existing(wall)
-        this.walls.push(wall)
-    }
-    addPlayer(data: InitialPlayer): Player {
-        const player = new Player(this, data)
+
+    add_player(id: integer): PlayerRenderer {
+        const player = new PlayerRenderer(this, this.gs, id)
         this.add.existing(player)
-        this.players.set(player.id, player)
-        // console.info(this.players)
+        this.players.set(id, player)
         return player
     }
 
-    async attemptStartPlay(): Promise<string> {
+    async attemptStartPlay() {
         const username: string = <string>$('#field-username').val()
         document.cookie = username
         if (username.length == 0) {
@@ -116,11 +86,6 @@ export class GameScene extends Scene {
         if (username.length > 20) {
             return 'Username cannot be longer than 20 chars'
         }
-        const result = await this.client.requestTransitionToPlaying({
-            username: username,
-            player_class: 0
-        })
-        return result
     }
 
 }
