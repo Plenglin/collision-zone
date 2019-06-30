@@ -111,6 +111,7 @@ export class PlayerRenderer extends GameObjects.Container {
         this.y = player.y
         this.vx = player.vx
         this.vy = player.vy
+        this.rotation = player.angle
         return false
     }
 }
