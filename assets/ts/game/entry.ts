@@ -1,28 +1,9 @@
-import { GameScene } from './view/scene'
+import { GameScene } from './view/gamescene'
 import * as $ from 'jquery'
 import 'bootstrap'
-import { Client } from './protocol';
+import { Client, connect_to_server } from './protocol';
+import { load_assets, LoadingScene } from './view/loadingscene';
 
-
-function initialize_phaser(spectator_client: Client) {
-    if (spectator_client.is_player) {
-        throw "Spectator client cannot be player"
-    }
-
-    const scene = new GameScene(spectator_client)
-    const PHASER_CONFIG = {
-        type: Phaser.AUTO,
-        scale: {
-            parent: 'phaser-div',
-            mode: Phaser.Scale.RESIZE,
-            resizeInterval: 500
-        },
-        inputMouse: true,
-        scene: scene
-    }
-
-    const phaser = new Phaser.Game(PHASER_CONFIG)
-}
 
 $('#field-username').keyup((event) => {
     if (event.keyCode === 13) {
@@ -52,9 +33,27 @@ $('#field-username').keyup((event) => {
 
 $.get("/mm/spectate", (data: any) => {
     console.info("Received server info", data)
-    const client = new Client(data.host, undefined, () => {
-        console.log("Client activated")
-        initialize_phaser(client)
+    const load = load_assets((scene) => {
+        const cfg = {
+            type: Phaser.AUTO,
+            scale: {
+                parent: 'phaser-div',
+                mode: Phaser.Scale.RESIZE,
+                resizeInterval: 500
+            },
+            inputMouse: true,
+            scene: [scene, new GameScene()]
+        }
+        new Phaser.Game(cfg)
+    })
+    const connect = connect_to_server(data.host, undefined)
+    Promise.all([load, connect]).then((values) => {
+        const load_scene = values[0] as LoadingScene
+        const client = values[1] as Client
+        if (client.is_player) {
+            throw "Spectator client cannot be player"
+        }
+        load_scene.scene.start('game_scene', { client: client })
     })
 })
 
