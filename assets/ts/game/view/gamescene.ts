@@ -1,10 +1,10 @@
-import { Scene, GameObjects } from "phaser"
-import { PlayerRenderer } from "./player"
-import { Client, ClientState } from '../protocol'
-
-import * as $ from "jquery"
-import { WallRenderer } from "./wall";
+import * as $ from "jquery";
+import { Scene } from "phaser";
 import { GameState, Wall } from "../gamestate";
+import { Client, ClientState } from '../protocol';
+import { PlayerRenderer } from "./player";
+import { WallRenderer } from "./wall";
+
 
 
 interface GameSceneArgs {
@@ -93,17 +93,6 @@ export class GameScene extends Scene {
         this.add.existing(player)
         this.players.set(id, player)
         return player
-    }
-
-    async attemptStartPlay() {
-        const username: string = <string>$('#field-username').val()
-        document.cookie = username
-        if (username.length == 0) {
-            return 'Username cannot be empty'
-        }
-        if (username.length > 20) {
-            return 'Username cannot be longer than 20 chars'
-        }
     }
 
 }
