@@ -41,7 +41,7 @@ function set_up_modal(game: Phaser.Game) {
 
 $.get("/mm/spectate", async (data: any) => {
     console.info("Received server info", data)
-    const load = load_assets((scene) => {
+    const load_scene = await load_assets((scene) => {
         const cfg = {
             type: Phaser.AUTO,
             scale: {
@@ -55,15 +55,11 @@ $.get("/mm/spectate", async (data: any) => {
         const game = new Phaser.Game(cfg)
         set_up_modal(game)
     })
-    const connect = connect_to_server(data.host, undefined)
-    Promise.all([load, connect]).then((values) => {
-        const load_scene = values[0] as LoadingScene
-        const client = values[1] as Client
-        if (client.is_player) {
-            throw "Spectator client cannot be player"
-        }
-        load_scene.scene.start('game_scene', { client: client })
-    })
+    const client = await connect_to_server(data.host, undefined)
+    if (client.is_player) {
+        throw "Spectator client cannot be player"
+    }
+    load_scene.scene.start('game_scene', { client: client })
 })
 
 $('#field-username').val(document.cookie)
