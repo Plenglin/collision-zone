@@ -39,6 +39,17 @@ export class GameScene extends Scene {
     create() {
         console.info("GAME PHASE: Create")
 
+        this.client.on_update_payload = () => {
+            const to_remove: Array<integer> = []
+            this.players.forEach((p) => {
+                if (p.on_update_payload()) {
+                    to_remove.push(p.player_id)
+                }
+            })
+            for (const id of to_remove) {
+                this.players.delete(id)
+            }
+        }
         this.gs = this.client.game_state as GameState
 
         this.gs.walls.forEach(w => {
@@ -49,6 +60,10 @@ export class GameScene extends Scene {
             console.info(p)
             this.add_player(i)
         })
+        this.gs.on_player_join = (p) => {
+            console.info("Player joined: ", p)
+            this.add_player(p.id)
+        }
 
         if (this.client.is_player) {
             console.log("Client in player mode")

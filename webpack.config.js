@@ -30,8 +30,8 @@ const cfg = {
         }]
     },
     output: {
-        filename: '[name].bundle.js',
-        path: path.resolve(__dirname, 'public/scripts')
+        filename: 'scripts/[name].js',
+        path: path.resolve(__dirname, 'public')
     },
     optimization: {
         minimizer: [new TerserPlugin({
@@ -63,11 +63,13 @@ const cfg = {
         }
     },
     plugins: [
-        new webpack.EvalSourceMapDevToolPlugin({
-            filename: '[name].js.map',
+        new webpack.SourceMapDevToolPlugin({
+            filename: 'sourcemaps/[name].js.map',
+            publicPath: '/static/',
+            fileContext: "public",
             exclude: [
-                'vendors.bundle.js'
-            ]
+                'vendors.js'
+            ],
         }),
         new BrotliGzipPlugin({
             asset: '[path].br[query]',

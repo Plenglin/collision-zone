@@ -103,3 +103,4 @@ typings/
 
 ### Webpack output directories
 public/scripts
+public/sourcemaps

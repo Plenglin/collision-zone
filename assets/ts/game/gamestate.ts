@@ -76,7 +76,8 @@ export class Wall {
 export class GameState {
     players: Map<integer, Player> = new Map()
     walls: Wall[] = []
-    highScores: Array<Player> = []
+    high_scores: Array<Player> = []
+    on_player_join: ((player: Player) => void) | undefined
 
     static readFromStream(stream: ByteArrayInputStream): GameState {
         const obj = new GameState()
@@ -134,8 +135,8 @@ export class GameState {
             deadPlayers.push(victimID)
         }
 
-        this.highScores = this.highScores.filter(p => deadPlayers.find(q => q === p.id) == undefined)
-        this.highScores.sort((a, b) => a.kills - b.kills)
+        this.high_scores = this.high_scores.filter(p => deadPlayers.find(q => q === p.id) == undefined)
+        this.high_scores.sort((a, b) => a.kills - b.kills)
     }
 
     applyPlayerJoinedEvents(stream: ByteArrayInputStream) {
@@ -145,6 +146,10 @@ export class GameState {
             const player = Player.readFromStream(stream)
             console.log("Joined:", player)
             this.players.set(player.id, player)
+
+            if (this.on_player_join != undefined) {
+                this.on_player_join(player)
+            }
         }
     }
 
