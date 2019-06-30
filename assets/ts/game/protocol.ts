@@ -1,7 +1,4 @@
-import * as $ from 'jquery'
 import { ByteArrayInputStream } from "../util";
-import { GameScene } from "./view/gamescene";
-import { GameObjects, Scene, Input } from "phaser";
 import { GameState, Player } from './gamestate';
 
 
@@ -13,6 +10,13 @@ namespace EventCode {
     export const KILLS = 0x90
     export const HIGH_SCORES = 0x91
     export const CHAT_MSG = 0x46
+}
+
+namespace ErrorCode {
+    export const MALFORMED_REQUEST = 4001;
+    export const USERNAME_TAKEN = 4002;
+    export const INVALID_USERNAME = 4003;
+    export const INVALID_PLAYER_CLASS = 4005;
 }
 
 export enum ClientState {
@@ -39,7 +43,7 @@ export class Client {
     private input_x: number = 0
     private input_y: number = 0
     
-    constructor(base_url: string, player_data?: PlayerInitData, private on_active?: () => void, private on_close?: (ev: CloseEvent) => void) {
+    constructor(base_url: string, player_data?: PlayerInitData, private on_active?: () => void, on_initialize_error?: (ev: CloseEvent) => void) {
         if (player_data) {
             this.url = base_url + `?username=${player_data.username}&class=${player_data.player_class}`
             this.is_player = true
@@ -71,10 +75,10 @@ export class Client {
         this.socket.onclose = (ev) => {
             console.log("Websocket closed", ev)
             clearInterval(this.send_player_task)
-            this.state = ClientState.CLOSED
-            if (on_close != undefined) {
-                on_close(ev)
+            if (this.state == ClientState.UNINITIALIZED && on_initialize_error != undefined) {
+                on_initialize_error(ev)
             }
+            this.state = ClientState.CLOSED
         }
     }
 
@@ -174,6 +178,16 @@ export function connect_to_server(base_url: string, player_data?: PlayerInitData
     return new Promise((resolve, reject) => {
         const client = new Client(base_url, player_data, () => {
             resolve(client)
-        }, reject)
+        }, (ev) => {
+            switch (ev.code) {
+                case ErrorCode.MALFORMED_REQUEST:
+                    reject(new Error("Malformed request"))
+                case ErrorCode.INVALID_PLAYER_CLASS:
+                    reject(new Error("Invalid player class"))
+                case ErrorCode.INVALID_USERNAME:
+                    reject(new Error("Invalid username"))
+            }
+            reject(new Error("Error in initialization"))
+        })
     })
 }

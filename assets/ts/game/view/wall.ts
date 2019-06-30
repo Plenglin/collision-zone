@@ -1,4 +1,3 @@
-import { ByteArrayInputStream } from "../../util";
 import { GameObjects, Scene } from "phaser";
 import { Wall } from "../gamestate";
 

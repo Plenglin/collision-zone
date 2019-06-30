@@ -1,9 +1,8 @@
-import { GameScene } from './view/gamescene'
-import * as $ from 'jquery'
-import 'bootstrap'
-import { Client, connect_to_server } from './protocol';
-import { load_assets, LoadingScene } from './view/loadingscene';
-import { Scene } from 'phaser';
+import 'bootstrap';
+import * as $ from 'jquery';
+import { connect_to_server } from './protocol';
+import { GameScene } from './view/gamescene';
+import { load_assets } from './view/loadingscene';
 
 
 $('#field-username').keyup((event) => {
@@ -24,14 +23,24 @@ function set_up_modal(game: Phaser.Game) {
         try {
             const mm_data = await $.post('/mm/play')
             console.log('mmdata', mm_data)
-            const field = $('#field-username').val() as string
-            document.cookie = field
+            const username = $('#field-username').val() as string
+
+            if (username.length == 0) {
+                throw new Error('Username cannot be empty')
+            }
+            if (username.length > 20) {
+                throw new Error('Username cannot be longer than 20 chars')
+            }
+
             const client = await connect_to_server(mm_data.host, {
-                username: field,
+                username: username,
                 player_class: 0
             })
+
             $('#player-config-modal').modal('hide')
             game.scene.start('game_scene', {client: client})
+
+            document.cookie = username
         } catch (error) {
             console.error(error)
             $('#btn-play').removeClass('disabled')
