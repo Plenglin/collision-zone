@@ -3,6 +3,7 @@ import * as $ from 'jquery'
 import 'bootstrap'
 import { Client, connect_to_server } from './protocol';
 import { load_assets, LoadingScene } from './view/loadingscene';
+import { Scene } from 'phaser';
 
 
 $('#field-username').keyup((event) => {
@@ -11,27 +12,34 @@ $('#field-username').keyup((event) => {
     }
 })
 
-// const btn = $('#btn-play')
-// btn.click(async () => {
-//     if (btn.hasClass("disabled")) {
-//         return;
-//     }
+function set_up_modal(game: Phaser.Game) {
+    const btn = $('#btn-play')
+    btn.click(async () => {
+        if (btn.hasClass("disabled")) {
+            return;
+        }
+        btn.addClass('disabled')
+        $('#spinner-connect').show()
 
-//     btn.addClass('disabled')
-//     $('#spinner-connect').show()
-//     const error = await this.attemptStartPlay()
-//     $('#spinner-connect').hide()
+        try {
+            const mm_data = await $.post('/mm/play')
+            console.log('mmdata', mm_data)
+            const client = await connect_to_server(mm_data.host, {
+                username: $('#field-username').val() as string,
+                player_class: 0
+            })
+            $('#player-config-modal').modal('hide')
+            game.scene.start('game_scene', {client: client})
+        } catch (error) {
+            console.error(error)
+            $('#btn-play').removeClass('disabled')
+        } finally {
+            $('#spinner-connect').hide()
+        }
+    })    
+}
 
-//     if (error != null) {
-//         // TODO implement an error notification system
-//         console.error(error)
-//         $('#btn-play').removeClass('disabled')
-//     } else {
-//         $('#player-config-modal').modal('hide')
-//     }
-// })
-
-$.get("/mm/spectate", (data: any) => {
+$.get("/mm/spectate", async (data: any) => {
     console.info("Received server info", data)
     const load = load_assets((scene) => {
         const cfg = {
@@ -44,7 +52,8 @@ $.get("/mm/spectate", (data: any) => {
             inputMouse: true,
             scene: [scene, new GameScene()]
         }
-        new Phaser.Game(cfg)
+        const game = new Phaser.Game(cfg)
+        set_up_modal(game)
     })
     const connect = connect_to_server(data.host, undefined)
     Promise.all([load, connect]).then((values) => {
