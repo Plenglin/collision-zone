@@ -7,33 +7,32 @@ import { WallRenderer } from "./wall";
 import { GameState, Wall } from "../gamestate";
 
 
+interface GameSceneArgs {
+    client: Client
+}
+
 export class GameScene extends Scene {
     players: Map<integer, PlayerRenderer> = new Map()
     walls: WallRenderer[] = []
     gs: GameState
+    client: Client
 
     highScores: Array<PlayerRenderer> = []
 
-    constructor(public client: Client) {
-        super('GameScene')
+    constructor() {
+        super('game_scene')
         console.log("Constructor of scene")
-        if (client.state != ClientState.ACTIVE) {
+    }
+
+    init(data: GameSceneArgs) {
+        if (data.client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
+        this.client = data.client
     }
 
     preload() {
         console.info("GAME PHASE: Preload")
-        const currentUrl = window.location
-        var baseUrl = currentUrl.protocol + "//" + currentUrl.host + "/" + currentUrl.pathname.split('/')[1]
-        console.info("Base URL set to ", baseUrl)
-        this.load.setBaseURL(baseUrl)
-        this.load.image("truck-alive", "static/images/truck-alive.png")
-        this.load.image("truck-dead", "static/images/truck-dead.png")
-        this.load.image("truck-invuln", "static/images/truck-invuln-frame.png")
-        this.load.image("boost-layer", "static/images/boost-layer.png")
-        this.load.image("boost-particle", "static/images/boost-particle.png")
-        this.load.image("dead-particle", "static/images/dead-particle.png")
     }
 
     create() {

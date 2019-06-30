@@ -1,6 +1,6 @@
 import * as $ from 'jquery'
 import { ByteArrayInputStream } from "../util";
-import { GameScene } from "./view/scene";
+import { GameScene } from "./view/gamescene";
 import { GameObjects, Scene, Input } from "phaser";
 import { GameState, Player } from './gamestate';
 
@@ -39,7 +39,7 @@ export class Client {
     private input_x: number = 0
     private input_y: number = 0
     
-    constructor(base_url: string, player_data?: PlayerInitData, private on_active?: () => void) {
+    constructor(base_url: string, player_data?: PlayerInitData, private on_active?: () => void, private on_close?: (ev: CloseEvent) => void) {
         if (player_data) {
             this.url = base_url + `?username=${player_data.username}&class=${player_data.player_class}`
             this.is_player = true
@@ -72,6 +72,9 @@ export class Client {
             console.log("Websocket closed", ev)
             clearInterval(this.send_player_task)
             this.state = ClientState.CLOSED
+            if (on_close != undefined) {
+                on_close(ev)
+            }
         }
     }
 
@@ -165,4 +168,12 @@ export class Client {
         this.socket.send(abuf)
     }
 
+}
+
+export function connect_to_server(base_url: string, player_data?: PlayerInitData): Promise<Client> {
+    return new Promise((resolve, reject) => {
+        const client = new Client(base_url, player_data, () => {
+            resolve(client)
+        }, reject)
+    })
 }
