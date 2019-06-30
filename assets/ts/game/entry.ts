@@ -21,9 +21,6 @@ function initialize_phaser(spectator_client: Client) {
         scene: scene
     }
 
-    $('#field-username').val(document.cookie)
-    $('#player-config-modal').modal('show')
-
     const phaser = new Phaser.Game(PHASER_CONFIG)
 }
 
@@ -55,8 +52,11 @@ $('#field-username').keyup((event) => {
 
 $.get("/mm/spectate", (data: any) => {
     console.info("Received server info", data)
-    const client = new Client(data.url)
-    client.on_open = () => {
+    const client = new Client(data.host, undefined, () => {
+        console.log("Client activated")
         initialize_phaser(client)
-    }
+    })
 })
+
+$('#field-username').val(document.cookie)
+$('#player-config-modal').modal('show')

@@ -7,7 +7,8 @@ const BrotliGzipPlugin = require('brotli-gzip-webpack-plugin')
 const BabelPlugin = require("babel-webpack-plugin")
 
 
-const env = process.env.NODE_ENV
+const env = process.env.NODE_ENV || 'dev'
+const is_dev = env === 'dev'
 
 const cfg = {
     devtool: false,
@@ -42,7 +43,7 @@ const cfg = {
                     //properties: true,
                 }, 
                 compress: {
-                    drop_console: true,
+                    drop_console: !is_dev,
                 },
                 keep_fnames: false,
                 keep_classnames: false
@@ -62,7 +63,7 @@ const cfg = {
         }
     },
     plugins: [
-        new webpack.SourceMapDevToolPlugin({
+        new webpack.EvalSourceMapDevToolPlugin({
             filename: '[name].js.map',
             exclude: [
                 'vendors.bundle.js'

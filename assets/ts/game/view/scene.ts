@@ -16,6 +16,7 @@ export class GameScene extends Scene {
 
     constructor(public client: Client) {
         super('GameScene')
+        console.log("Constructor of scene")
         if (client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
