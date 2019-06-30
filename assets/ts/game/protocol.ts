@@ -33,6 +33,8 @@ export class Client {
     is_player: boolean
     state: ClientState = ClientState.UNINITIALIZED
 
+    on_update_payload: (() => void) | undefined
+
     private send_player_task: any = -1
     private input_x: number = 0
     private input_y: number = 0
@@ -133,6 +135,9 @@ export class Client {
                 break
             case EventCode.UPDATE_PAYLOAD:
                 gs.applyUpdatesFromStream(stream)
+                if (this.on_update_payload != undefined) {
+                    this.on_update_payload()
+                }
                 break
         }
     }

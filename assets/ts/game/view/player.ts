@@ -12,6 +12,9 @@ export class PlayerRenderer extends GameObjects.Container {
 
     text: GameObjects.Text
 
+    vx: number = 0
+    vy: number = 0
+
     constructor(scene: Scene, private game_state: GameState, public player_id: integer) {
         super(scene)
 
@@ -70,8 +73,8 @@ export class PlayerRenderer extends GameObjects.Container {
         }
         const dts = delta / 1000
         this.rotation += player.omega * dts
-        this.x += player.vx * dts * 10
-        this.y += player.vy * dts * 10
+        this.x += this.vx * dts
+        this.y += this.vy * dts
 
         const emitAngle = -Math.atan2(player.vy, player.vy) * 180 / Math.PI 
         this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
@@ -96,5 +99,18 @@ export class PlayerRenderer extends GameObjects.Container {
             this.boost_particle_manager.destroy()            
         }, [], this)
         this.text.destroy()
+    }
+
+    on_update_payload(): boolean {
+        const player = this.player
+        if (player == undefined) {
+            this.destroy()
+            return true
+        }
+        this.x = player.x
+        this.y = player.y
+        this.vx = player.vx
+        this.vy = player.vy
+        return false
     }
 }
