@@ -6,6 +6,8 @@ import { GameState, Player } from './gamestate';
 
 
 namespace EventCode {
+    export const INITIAL_SPEC = 0x05
+    export const INITIAL_PLAY = 0x06
     export const UPDATE_PAYLOAD = 0x07
     export const PLAYER_JOIN = 0x41
     export const KILLS = 0x90
@@ -48,22 +50,20 @@ export class Client {
         this.socket.onopen = () => {
             console.info("Socket opened at", this.url)
         }
-        this.socket.onmessage = (data) => {
-            const stream = new ByteArrayInputStream(new ArrayBuffer(data.data))
-            if (this.is_player) {
-                this.player_id = stream.readShort()
-                this.send_player_task = setInterval(() => {
-                    this.send_player_input()
-                }, 250)
-            }
-            this.game_state = GameState.readFromStream(stream)
-            this.state = ClientState.ACTIVE
-            if (this.on_active != undefined) {
-                this.on_active()
-            }
-            this.socket.onmessage = (data) => {
-                const stream = new ByteArrayInputStream(new ArrayBuffer(data.data))
-                this.handle_active_message(stream)
+        this.socket.onmessage = async (data) => {
+            const array_buf = await new Response(data.data).arrayBuffer()
+            console.debug(array_buf)
+            const stream = new ByteArrayInputStream(array_buf)
+
+            switch (this.state) {
+                case ClientState.UNINITIALIZED:
+                    this.handle_uninitialized_message(stream)
+                    break
+                case ClientState.ACTIVE:
+                    this.handle_active_message(stream)
+                    break
+                case ClientState.CLOSED:
+                    throw "how could this happen"
             }
         }
         this.socket.onclose = (ev) => {
@@ -91,6 +91,34 @@ export class Client {
         dv.setFloat32(6, this.input_y / 10, true)
         // console.debug("sending", this.playerDx, this.playerDy)
         this.socket.send(buf)
+    }
+
+    private handle_uninitialized_message(stream: ByteArrayInputStream) {
+        const event_code = stream.readByte()
+        if (event_code == EventCode.INITIAL_PLAY) {
+            if (this.is_player) {
+                this.player_id = stream.readShort()
+                console.log("Read player id", this.player_id)
+                this.send_player_task = setInterval(() => {
+                    this.send_player_input()
+                }, 250)
+            } else {
+                throw "event code and mode mismatch: should be spectator but is player"
+            }
+        } else if (event_code == EventCode.INITIAL_SPEC) {
+            if (this.is_player) {
+                throw "event code and mode mismatch: should be player but is spectator"
+            }
+        } else {
+            throw "got invalid init event code"
+        }
+
+        this.game_state = GameState.readFromStream(stream)
+        this.state = ClientState.ACTIVE
+        
+        if (this.on_active != undefined) {
+            this.on_active()
+        }
     }
 
     private handle_active_message(stream: ByteArrayInputStream) {

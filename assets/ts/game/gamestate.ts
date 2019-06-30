@@ -81,8 +81,9 @@ export class GameState {
     static readFromStream(stream: ByteArrayInputStream): GameState {
         const obj = new GameState()
 
-        const version = stream.readStringUntilNull()
-        console.info("Server version ", version)
+        //const version = stream.readStringUntilNull()
+        //console.info("Server version ", version)
+        //stream.readByte()
 
         const wallCount = stream.readShort()
         console.debug("Reading", wallCount, "walls")
