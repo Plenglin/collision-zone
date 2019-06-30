@@ -20,24 +20,6 @@ export class GameScene extends Scene {
         if (client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
-        this.gs = client.game_state as GameState
-
-        this.gs.walls.forEach(w => {
-            this.add_wall(w)
-        })
-        this.gs.players.forEach((p, i) => {
-            console.info(p)
-            this.add_player(i)
-        })
-
-        if (client.is_player) {
-            console.log("Client in player mode")
-            const player_obj = this.players.get(client.player_id) as PlayerRenderer
-            this.cameras.main.startFollow(player_obj)
-        } else {
-            console.log("Client in spectator mode")
-            this.cameras.main.centerOn(0, 0)
-        }
     }
 
     preload() {
@@ -56,6 +38,27 @@ export class GameScene extends Scene {
 
     create() {
         console.info("GAME PHASE: Create")
+
+        this.gs = this.client.game_state as GameState
+
+        this.gs.walls.forEach(w => {
+            console.info(w)
+            this.add_wall(w)
+        })
+        this.gs.players.forEach((p, i) => {
+            console.info(p)
+            this.add_player(i)
+        })
+
+        if (this.client.is_player) {
+            console.log("Client in player mode")
+            const player_obj = this.players.get(this.client.player_id) as PlayerRenderer
+            this.cameras.main.startFollow(player_obj)
+        } else {
+            console.log("Client in spectator mode")
+            this.cameras.main.centerOn(0, 0)
+        }
+
         const cam = this.cameras.main
         cam.zoom = 1
 

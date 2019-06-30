@@ -53,6 +53,10 @@ export class PlayerRenderer extends GameObjects.Container {
     
         this.dead_particle_emitter.stop()
         this.boost_particle_emitter.stop()
+
+        const player = this.player as Player
+        this.x = player.x * 10
+        this.y = player.y * 10
     }
 
     get player(): Player | undefined {
@@ -66,8 +70,8 @@ export class PlayerRenderer extends GameObjects.Container {
         }
         const dts = delta / 1000
         this.rotation += player.omega * dts
-        this.x += player.vx * dts
-        this.y += player.vy * dts
+        this.x += player.vx * dts * 10
+        this.y += player.vy * dts * 10
 
         const emitAngle = -Math.atan2(player.vy, player.vy) * 180 / Math.PI 
         this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
