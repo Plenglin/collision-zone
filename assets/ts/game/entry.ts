@@ -24,8 +24,10 @@ function set_up_modal(game: Phaser.Game) {
         try {
             const mm_data = await $.post('/mm/play')
             console.log('mmdata', mm_data)
+            const field = $('#field-username').val() as string
+            document.cookie = field
             const client = await connect_to_server(mm_data.host, {
-                username: $('#field-username').val() as string,
+                username: field,
                 player_class: 0
             })
             $('#player-config-modal').modal('hide')
