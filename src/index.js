@@ -33,6 +33,8 @@ app.use('/static/scripts', expressStaticGzip('./public/scripts', {
     }
 }))
 
+app.use('/static/sourcemaps', express.static('./public/sourcemaps'))
+
 app.use('/static/styles', express.static('./public/styles'))
 app.use('/static/styles/bootstrap', express.static('./node_modules/bootstrap/dist/css'))
 
