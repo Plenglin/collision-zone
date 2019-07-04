@@ -69,7 +69,7 @@ export class Client {
                     this.handle_active_message(stream)
                     break
                 case ClientState.CLOSED:
-                    throw "how could this happen"
+                    return
             }
         }
         this.socket.onclose = (ev) => {
@@ -92,12 +92,12 @@ export class Client {
     }
 
     private send_player_input(): void {
-        const buf = new ArrayBuffer(10)
+        console.debug("Sending player input", this.input_x, this.input_y)
+        const buf = new ArrayBuffer(9)
         const dv = new DataView(buf)
-        dv.setUint8(0, 117)  // unreliable
-        dv.setUint8(1, 0x3a)  // set_input command code
-        dv.setFloat32(2, this.input_x / 10, true)
-        dv.setFloat32(6, this.input_y / 10, true)
+        dv.setUint8(0, 0x3a)  // set_input command code
+        dv.setFloat32(1, this.input_x / 10, true)
+        dv.setFloat32(5, this.input_y / 10, true)
         // console.debug("sending", this.playerDx, this.playerDy)
         this.socket.send(buf)
     }
@@ -107,7 +107,7 @@ export class Client {
         if (event_code == EventCode.INITIAL_PLAY) {
             if (this.is_player) {
                 this.player_id = stream.readShort()
-                console.log("Read player id", this.player_id)
+                console.log("This player id", this.player_id)
                 this.send_player_task = setInterval(() => {
                     this.send_player_input()
                 }, 250)
@@ -155,20 +155,18 @@ export class Client {
     }
 
     send_boost() {
-        const abuf = new ArrayBuffer(2)
+        const abuf = new ArrayBuffer(1)
         const view = new DataView(abuf)
-        view.setUint8(0, 114)  // reliable
-        view.setUint8(1, 0x52)  // event_code
+        view.setUint8(0, 0x52)  // event_code
         this.socket.send(abuf)
     }
 
     send_brake(braking: boolean) {
-        const abuf = new ArrayBuffer(3)
+        const abuf = new ArrayBuffer(2)
         const view = new DataView(abuf)
-        view.setUint8(0, 114)  // reliable
-        view.setUint8(1, 0x32)  // event_code
+        view.setUint8(0, 0x32)  // event_code
         console.debug(braking)
-        view.setUint8(2, braking ? 0x01 : 0x00)
+        view.setUint8(1, braking ? 0x01 : 0x00)
         this.socket.send(abuf)
     }
 

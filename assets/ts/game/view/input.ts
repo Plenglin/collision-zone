@@ -29,7 +29,7 @@ export class PlayerInputHandler extends GameObjects.GameObject {
             const p = scene.cameras.main.getWorldPoint(event.pageX, event.pageY)
             const dx = p.x - this.player.x
             const dy = p.y - this.player.y
-            // console.debug(dx, dy)
+            console.debug(dx, dy)
             client.set_player_input(dx, dy)
         })
         receiver.mousedown((event) => {

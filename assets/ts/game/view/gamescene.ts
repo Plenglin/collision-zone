@@ -30,6 +30,9 @@ export class GameScene extends Scene {
         if (this.client != undefined) {
             this.client.close()
         }
+        this.highScores = []
+        this.walls = []
+        this.players = new Map()
         if (data.client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
