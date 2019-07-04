@@ -102,7 +102,7 @@ export class PlayerRenderer extends GameObjects.Container {
     on_update_payload(): boolean {
         const player = this.player
         if (player == undefined) {
-            this.destroy()
+            console.log("Missing: ", this)
             this.destroyed = true
             return true
         }
