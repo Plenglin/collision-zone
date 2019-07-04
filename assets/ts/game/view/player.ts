@@ -56,10 +56,6 @@ export class PlayerRenderer extends GameObjects.Container {
     
         this.dead_particle_emitter.stop()
         this.boost_particle_emitter.stop()
-
-        const player = this.player as Player
-        this.x = player.x * 10
-        this.y = player.y * 10
     }
 
     get player(): Player | undefined {

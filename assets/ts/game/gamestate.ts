@@ -144,7 +144,6 @@ export class GameState {
         console.info("Reading", count, "new players")
         for (var i = 0; i < count; i++) {
             const player = Player.readFromStream(stream)
-            console.log("Joined:", player)
             this.players.set(player.id, player)
 
             if (this.on_player_join != undefined) {
