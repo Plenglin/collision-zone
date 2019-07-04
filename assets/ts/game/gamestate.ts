@@ -77,7 +77,7 @@ export class GameState {
     players: Map<integer, Player> = new Map()
     walls: Wall[] = []
     high_scores: Array<Player> = []
-    on_player_join: ((player: Player) => void) | undefined
+    on_player_join?: (player: Player) => void
 
     static readFromStream(stream: ByteArrayInputStream): GameState {
         const obj = new GameState()

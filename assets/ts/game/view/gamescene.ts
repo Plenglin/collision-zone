@@ -41,21 +41,15 @@ export class GameScene extends Scene {
     create() {
         console.info("GAME PHASE: Create")
 
+        ;(this.client.game_state as GameState).on_player_join = (p) => {
+            this.add_player(p.id)
+        }
         this.client.on_update_payload = () => {
             this.players.forEach(p => {
                 p.destroyed = true
             })
-            const to_remove: Array<PlayerRenderer> = []
-            ;(this.client.game_state as GameState).players.forEach((p, id) => {
-                var pr: PlayerRenderer
-                if (this.players.has(id)) {
-                    pr = this.players.get(id) as PlayerRenderer
-                } else {
-                    pr = this.add_player(id)
-                }
-                if (pr.on_update_payload()) {
-                    to_remove.push(pr)
-                }
+            this.players.forEach(pr => {
+                pr.on_update_payload()
                 if (pr.player_id == this.client.player_id) {
                     console.info("Player object", pr)
                     //this.cameras.main.startFollow(p)
@@ -64,9 +58,12 @@ export class GameScene extends Scene {
                     }
                 }
             })
-            for (var obj of to_remove) {
-                this.players.delete(obj.player_id)
-            }
+            this.players.forEach(p => {
+                if (p.destroyed) {
+                    p.destroy()
+                    this.players.delete(p.player_id)
+                }
+            })
         }
         this.gs = this.client.game_state as GameState
 
