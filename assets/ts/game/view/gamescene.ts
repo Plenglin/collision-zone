@@ -4,6 +4,7 @@ import { GameState, Wall } from "../gamestate";
 import { Client, ClientState } from '../protocol';
 import { PlayerRenderer } from "./player";
 import { WallRenderer } from "./wall";
+import { PlayerInputHandler } from "./input";
 
 
 
@@ -18,6 +19,7 @@ export class GameScene extends Scene {
     client: Client
 
     highScores: Array<PlayerRenderer> = []
+    player_input?: PlayerInputHandler
 
     constructor() {
         super('game_scene')
@@ -40,17 +42,30 @@ export class GameScene extends Scene {
         console.info("GAME PHASE: Create")
 
         this.client.on_update_payload = () => {
-            const to_remove: Array<integer> = []
-            this.players.forEach((p) => {
-                if (p.on_update_payload()) {
-                    to_remove.push(p.player_id)
-                } else if (p.player_id == this.client.player_id) {
-                    console.info("Player object", p)
-                    this.cameras.main.startFollow(p)
+            this.players.forEach(p => {
+                p.destroyed = true
+            })
+            const to_remove: Array<PlayerRenderer> = []
+            ;(this.client.game_state as GameState).players.forEach((p, id) => {
+                var pr: PlayerRenderer
+                if (this.players.has(id)) {
+                    pr = this.players.get(id) as PlayerRenderer
+                } else {
+                    pr = this.add_player(id)
+                }
+                if (pr.on_update_payload()) {
+                    to_remove.push(pr)
+                }
+                if (pr.player_id == this.client.player_id) {
+                    console.info("Player object", pr)
+                    //this.cameras.main.startFollow(p)
+                    if (this.player_input == undefined) {
+                        this.player_input = new PlayerInputHandler(this, this.client)
+                    }
                 }
             })
-            for (const id of to_remove) {
-                this.players.delete(id)
+            for (var obj of to_remove) {
+                this.players.delete(obj.player_id)
             }
         }
         this.gs = this.client.game_state as GameState
@@ -63,10 +78,6 @@ export class GameScene extends Scene {
             console.info(p)
             this.add_player(i)
         })
-        this.gs.on_player_join = (p) => {
-            console.info("Player joined: ", p)
-            this.add_player(p.id)
-        }
 
         const cam = this.cameras.main
         cam.zoom = 1
@@ -75,11 +86,11 @@ export class GameScene extends Scene {
             cam.setSize(size.width, size.height)
             cam.centerToSize()
         })
+
     }
 
     update() {
         if (!this.client.is_player) {
-            console.log("Client in spectator mode")
             this.cameras.main.centerOn(0, 0)
         }
     }
