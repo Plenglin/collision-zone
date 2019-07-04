@@ -29,6 +29,7 @@ export class GameScene extends Scene {
             throw "Client must be ACTIVE!"
         }
         this.client = data.client
+        console.log("Initializing gamescene with is_player=", data.client.is_player)
     }
 
     preload() {
@@ -43,6 +44,9 @@ export class GameScene extends Scene {
             this.players.forEach((p) => {
                 if (p.on_update_payload()) {
                     to_remove.push(p.player_id)
+                } else if (p.player_id == this.client.player_id) {
+                    console.info("Player object", p)
+                    this.cameras.main.startFollow(p)
                 }
             })
             for (const id of to_remove) {
@@ -64,15 +68,6 @@ export class GameScene extends Scene {
             this.add_player(p.id)
         }
 
-        if (this.client.is_player) {
-            console.log("Client in player mode")
-            const player_obj = this.players.get(this.client.player_id) as PlayerRenderer
-            this.cameras.main.startFollow(player_obj)
-        } else {
-            console.log("Client in spectator mode")
-            this.cameras.main.centerOn(0, 0)
-        }
-
         const cam = this.cameras.main
         cam.zoom = 1
 
@@ -80,6 +75,13 @@ export class GameScene extends Scene {
             cam.setSize(size.width, size.height)
             cam.centerToSize()
         })
+    }
+
+    update() {
+        if (!this.client.is_player) {
+            console.log("Client in spectator mode")
+            this.cameras.main.centerOn(0, 0)
+        }
     }
 
     add_wall(wall: Wall) {
