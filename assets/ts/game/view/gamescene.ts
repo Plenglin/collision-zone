@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import { Scene } from "phaser";
-import { GameState, Wall } from "../gamestate";
+import { GameState, Wall, Player } from "../gamestate";
 import { Client, ClientState } from '../protocol';
 import { PlayerRenderer } from "./player";
 import { WallRenderer } from "./wall";
@@ -27,6 +27,9 @@ export class GameScene extends Scene {
     }
 
     init(data: GameSceneArgs) {
+        if (this.client != undefined) {
+            this.client.close()
+        }
         if (data.client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
@@ -51,10 +54,9 @@ export class GameScene extends Scene {
             this.players.forEach(pr => {
                 pr.on_update_payload()
                 if (pr.player_id == this.client.player_id) {
-                    console.info("Player object", pr)
-                    //this.cameras.main.startFollow(p)
                     if (this.player_input == undefined) {
                         this.player_input = new PlayerInputHandler(this, this.client)
+                        this.cameras.main.startFollow(pr)
                     }
                 }
             })
@@ -90,7 +92,7 @@ export class GameScene extends Scene {
         if (!this.client.is_player) {
             this.cameras.main.centerOn(0, 0)
         }
-    }
+    }    
 
     add_wall(wall: Wall) {
         const obj = new WallRenderer(this, wall)
@@ -102,6 +104,9 @@ export class GameScene extends Scene {
         const player = new PlayerRenderer(this, this.gs, id)
         this.add.existing(player)
         this.players.set(id, player)
+        const data = player.player as Player
+        player.x = data.x
+        player.y = data.y
         return player
     }
 
