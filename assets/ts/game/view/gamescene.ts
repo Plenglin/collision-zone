@@ -47,38 +47,11 @@ export class GameScene extends Scene {
     create() {
         console.info("GAME PHASE: Create")
 
-        ;(this.client.game_state as GameState).on_player_join = (p) => {
-            this.add_player(p.id)
-        }
-        this.client.on_update_payload = () => {
-            this.players.forEach(p => {
-                p.destroyed = true
-            })
-            this.players.forEach(pr => {
-                pr.on_update_payload()
-                if (pr.player_id == this.client.player_id) {
-                    if (this.player_input == undefined) {
-                        this.player_input = new PlayerInputHandler(this, this.client)
-                        this.cameras.main.startFollow(pr)
-                    }
-                }
-            })
-            this.players.forEach(p => {
-                if (p.destroyed) {
-                    p.destroy()
-                    this.players.delete(p.player_id)
-                }
-            })
-        }
         this.gs = this.client.game_state as GameState
 
         this.gs.walls.forEach(w => {
             console.info(w)
             this.add_wall(w)
-        })
-        this.gs.players.forEach((p, i) => {
-            console.info(p)
-            this.add_player(i)
         })
 
         const cam = this.cameras.main
@@ -88,11 +61,42 @@ export class GameScene extends Scene {
             cam.setSize(size.width, size.height)
             cam.centerToSize()
         })
-
+        
+        this.gs.players.forEach((p, i) => {
+            console.info(p)
+            this.add_player(i)
+        })
+        ;(this.client.game_state as GameState).on_player_join = (p) => {
+            if (!this.players.has(p.id)) {
+                this.add_player(p.id)
+            }
+        }
+        this.client.on_update_payload = () => {
+            this.players.forEach(p => {
+                p.destroyed = true
+            })
+            this.players.forEach(pr => {
+                pr.on_update_payload()
+            })
+            this.players.forEach(p => {
+                if (p.destroyed) {
+                    p.destroy()
+                    this.players.delete(p.player_id)
+                }
+            })
+        }
     }
 
     update() {
-        if (!this.client.is_player) {
+        if (this.client.is_player) {
+            const pr = this.players.get(this.client.player_id)
+            if (pr != undefined) {
+                this.cameras.main.startFollow(pr)
+                if (this.player_input == undefined) {
+                    this.player_input = new PlayerInputHandler(this, this.client, pr)
+                }
+            }
+        } else {
             this.cameras.main.centerOn(0, 0)
         }
     }    
