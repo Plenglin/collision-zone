@@ -172,6 +172,10 @@ export class Client {
         this.socket.send(abuf)
     }
 
+    close() {
+        this.socket.close()
+    }
+
 }
 
 export function connect_to_server(base_url: string, player_data?: PlayerInitData): Promise<Client> {
