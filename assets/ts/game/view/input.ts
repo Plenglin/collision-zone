@@ -1,6 +1,7 @@
-import { Client } from "./protocol";
+import { Client } from "../protocol";
 import { GameObjects, Input, Scene } from "phaser";
-import { Player } from "./gamestate";
+import { Player } from "../gamestate";
+import * as $ from 'jquery'
 
 export class PlayerInputHandler extends GameObjects.GameObject {
     private pointer: Input.Pointer

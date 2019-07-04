@@ -14,6 +14,8 @@ export class PlayerRenderer extends GameObjects.Container {
 
     vx: number = 0
     vy: number = 0
+    
+    destroyed: boolean = false
 
     constructor(scene: Scene, private game_state: GameState, public player_id: integer) {
         super(scene)
@@ -101,6 +103,7 @@ export class PlayerRenderer extends GameObjects.Container {
         const player = this.player
         if (player == undefined) {
             this.destroy()
+            this.destroyed = true
             return true
         }
         this.x = player.x
@@ -108,6 +111,7 @@ export class PlayerRenderer extends GameObjects.Container {
         this.vx = player.vx
         this.vy = player.vy
         this.rotation = player.angle
+        this.destroyed = false
         return false
     }
 }
