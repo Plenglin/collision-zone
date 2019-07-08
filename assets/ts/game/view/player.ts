@@ -82,6 +82,7 @@ export class PlayerRenderer extends GameObjects.Container {
             this.dead_sprite.setVisible(true)
             this.dead_particle_emitter.start()
         }
+        this.invuln_sprite.setVisible(player.is_invulnerable)
         if (player.is_boosting) {
             this.boost_particle_emitter.start()
         } else {
