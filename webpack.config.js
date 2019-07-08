@@ -34,21 +34,26 @@ const cfg = {
         path: path.resolve(__dirname, 'public')
     },
     optimization: {
-        minimizer: [new TerserPlugin({
-            cache: true,
-            sourceMap: true,
-            terserOptions: {
-                mangle: {
-                    toplevel: true,
-                    //properties: true,
-                }, 
-                compress: {
-                    drop_console: !is_dev,
+        minimizer: [
+            new TerserPlugin({
+                chunkFilter: (chunk) => chunk.name === 'vendors',
+                cache: true,
+                sourceMap: false,
+            }),
+            new TerserPlugin({
+                chunkFilter: (chunk) => chunk.name !== 'vendors',
+                cache: true,
+                sourceMap: true,
+                terserOptions: {
+                    mangle: {
+                        toplevel: true,
+                    },
+                    compress: {
+                        drop_console: !is_dev,
+                    },
                 },
-                keep_fnames: false,
-                keep_classnames: false
-            },
-        })],
+            }),
+        ],
         minimize: true,
         removeAvailableModules: true,
         concatenateModules: true,
