@@ -51,25 +51,49 @@
 
   <div id="high-scores">
     <table>
-      <col width="30">
-      <col width="200">
-      <col width="30">
-      <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Kills</th>
-      </tr>
-      <tr>
-        <td>1.</td>
-        <td>Foo bar spam</td>
-        <td>32</td>
-      </tr>
+      <colgroup>
+        <col width="30">
+        <col width="200">
+        <col width="30">
+      </colgroup>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th>Kills</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-high-score-number="1">
+          <td class="high-score-number">1.</td>
+          <td class="high-score-name"></td>
+          <td class="high-score-kills"></td>
+        </tr>
+        <tr data-high-score-number="2">
+          <td class="high-score-number">2.</td>
+          <td class="high-score-name"></td>
+          <td class="high-score-kills"></td>
+        </tr>
+        <tr data-high-score-number="3">
+          <td class="high-score-number">3.</td>
+          <td class="high-score-name"></td>
+          <td class="high-score-kills"></td>
+        </tr>
+        <tr data-high-score-number="4">
+          <td class="high-score-number">4.</td>
+          <td class="high-score-name"></td>
+          <td class="high-score-kills"></td>
+        </tr>
+        <tr data-high-score-number="5">
+          <td class="high-score-number">5.</td>
+          <td class="high-score-name"></td>
+          <td class="high-score-kills"></td>
+        </tr>
+      </tbody>
     </table>
   </div>
 
   <div id="kill-feed">
-    <p>A killed b with C</p>
-    <p>A killed b</p>
   </div>
   
   <script type="text/javascript" src="/static/scripts/vendors.js"></script>

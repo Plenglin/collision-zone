@@ -66,11 +66,31 @@ export class GameScene extends Scene {
             console.info(p)
             this.add_player(i)
         })
-        ;(this.client.game_state as GameState).on_player_join = (p) => {
+        this.gs.on_player_join = (p) => {
             if (!this.players.has(p.id)) {
                 this.add_player(p.id)
             }
         }
+        this.gs.on_kill = (killer, victim, via) => {
+            const kf = $('#kill-feed')
+            kf.append($(`<p>${killer.name} killed ${victim.name}</p>`))
+            // setTimeout(() => {
+            //     object.remove()
+            // }, 5000);
+            const children = kf.children()
+            if (children.length > 15) {
+                children[0].remove()
+            }
+        }
+        this.gs.on_high_scores_change = () => {
+            $('#high-scores > table > tbody').children().each((i, element) => {
+                console.log('i', i, element)
+                const player = this.gs.high_scores[i]
+                $(element).children('.high-score-name').text(player.name)
+                $(element).children('.high-score-kills').text(player.kills)
+            })
+        }
+
         this.client.on_update_payload = () => {
             this.players.forEach(p => {
                 p.destroyed = true

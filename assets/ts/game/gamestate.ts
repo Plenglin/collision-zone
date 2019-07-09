@@ -78,6 +78,8 @@ export class GameState {
     walls: Wall[] = []
     high_scores: Array<Player> = []
     on_player_join?: (player: Player) => void
+    on_kill?: (killer: Player, victim: Player, via?: Player) => void
+    on_high_scores_change?: () => void
 
     static readFromStream(stream: ByteArrayInputStream): GameState {
         const obj = new GameState()
@@ -98,6 +100,7 @@ export class GameState {
         for (var i = 0; i < playerCount; i++) {
             const player = Player.readFromStream(stream)
             obj.players.set(player.id, player)
+            obj.high_scores.push(player)
         }
         return obj
     }
@@ -132,11 +135,25 @@ export class GameState {
             const player_obj = this.players.get(killerID) as Player
             player_obj.kills = killerKills
             console.info(player_obj.name, "killed", player_obj.name)
+
+            if (this.on_kill != undefined) {
+                this.on_kill(
+                    this.players.get(killerID) as Player, 
+                    this.players.get(victimID) as Player,
+                    undefined
+                )
+            }
+
             deadPlayers.push(victimID)
         }
 
-        this.high_scores = this.high_scores.filter(p => deadPlayers.find(q => q === p.id) == undefined)
-        this.high_scores.sort((a, b) => a.kills - b.kills)
+        if (deadPlayers.length > 0) {
+            this.high_scores = this.high_scores.filter(p => deadPlayers.find(q => q === p.id) == undefined)
+            this.high_scores.sort((a, b) => b.kills - a.kills)
+            if (this.on_high_scores_change != undefined) {
+                this.on_high_scores_change()
+            }
+        }
     }
 
     applyPlayerJoinedEvents(stream: ByteArrayInputStream) {
@@ -145,6 +162,7 @@ export class GameState {
         for (var i = 0; i < count; i++) {
             const player = Player.readFromStream(stream)
             this.players.set(player.id, player)
+            this.high_scores.push(player)
 
             if (this.on_player_join != undefined) {
                 this.on_player_join(player)
