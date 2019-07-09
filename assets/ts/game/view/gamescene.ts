@@ -73,12 +73,13 @@ export class GameScene extends Scene {
         }
         this.gs.on_kill = (killer, victim, via) => {
             const kf = $('#kill-feed')
-            kf.append($(`<p>${killer.name} killed ${victim.name}</p>`))
-            // setTimeout(() => {
-            //     object.remove()
-            // }, 5000);
+            const id = `kf-${killer.id}-${victim.id}`
+            kf.append($(`<p id="${id}">${killer.name} killed ${victim.name}</p>`))
+            setTimeout(() => {
+                $('#' + id).remove()
+            }, 5000);
             const children = kf.children()
-            if (children.length > 15) {
+            if (children.length > 10) {
                 children[0].remove()
             }
         }
