@@ -10,6 +10,8 @@ export class PlayerRenderer extends GameObjects.Container {
     dead_particle_manager: GameObjects.Particles.ParticleEmitterManager
     dead_particle_emitter: GameObjects.Particles.ParticleEmitter
 
+    label_player_name?: string
+
     text?: GameObjects.Text
 
     vx: number = 0
@@ -108,13 +110,13 @@ export class PlayerRenderer extends GameObjects.Container {
             return true
         }
         if (!this.initialized) {
-            this.player_name = player.name
-            this.text = this.scene.add.text(0, 0, this.player_name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
+            this.label_player_name = player.name
+            this.text = this.scene.add.text(0, 0, this.label_player_name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
             this.text.scale = 0.15
             this.text.setOrigin(0.5)
             this.initialized = true
         }
-        (this.text as GameObjects.Text).text = `${this.player_name} (${player.kills})`
+        (this.text as GameObjects.Text).text = `${this.label_player_name} (${player.kills})`
         this.x = player.x
         this.y = player.y
         this.vx = player.vx
