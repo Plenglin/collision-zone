@@ -78,7 +78,7 @@ export class GameState {
     walls: Wall[] = []
     high_scores: Array<Player> = []
     on_player_join?: (player: Player) => void
-    on_kill?: (killer: Player, victim: Player, via?: Player) => void
+    on_kill?: (victim: Player, via: Player, killer?: Player) => void
     on_high_scores_change?: () => void
 
     static readFromStream(stream: ByteArrayInputStream): GameState {
@@ -131,6 +131,7 @@ export class GameState {
         for (var i = 0; i < count; i++) {
             const killerID = stream.readShort()
             const victimID = stream.readShort()
+            const viaID = stream.readShort()
             const killerKills = stream.readShort()
             const player_obj = this.players.get(killerID) as Player
             player_obj.kills = killerKills
@@ -138,9 +139,9 @@ export class GameState {
 
             if (this.on_kill != undefined) {
                 this.on_kill(
-                    this.players.get(killerID) as Player, 
                     this.players.get(victimID) as Player,
-                    undefined
+                    this.players.get(viaID) as Player,
+                    this.players.get(killerID)
                 )
             }
 
