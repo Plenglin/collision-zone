@@ -10,12 +10,13 @@ export class PlayerRenderer extends GameObjects.Container {
     dead_particle_manager: GameObjects.Particles.ParticleEmitterManager
     dead_particle_emitter: GameObjects.Particles.ParticleEmitter
 
-    text: GameObjects.Text
+    text?: GameObjects.Text
 
     vx: number = 0
     vy: number = 0
     
     destroyed: boolean = false
+    initialized: boolean = false
 
     constructor(scene: Scene, private game_state: GameState, public player_id: integer) {
         super(scene)
@@ -31,11 +32,6 @@ export class PlayerRenderer extends GameObjects.Container {
         this.add(this.alive_sprite)
         this.add(this.invuln_sprite)
         this.add(this.dead_sprite)
-
-        this.text = scene.add.text(0, 0, this.player_name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
-        //console.log(this.text)
-        this.text.scale = 0.15
-        this.text.setOrigin(0.5)
 
         this.dead_particle_manager = this.scene.add.particles('dead-particle')
         this.boost_particle_manager = this.scene.add.particles('boost-particle')
@@ -77,7 +73,9 @@ export class PlayerRenderer extends GameObjects.Container {
         const emitAngle = -Math.atan2(player.vy, player.vy) * 180 / Math.PI 
         this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
 
-        this.text.setPosition(this.x, this.y - 10)
+        if (this.text != undefined) {
+            this.text.setPosition(this.x, this.y - 10)
+        }
         if (!player.is_alive) {
             this.dead_sprite.setVisible(true)
             this.dead_particle_emitter.start()
@@ -97,7 +95,9 @@ export class PlayerRenderer extends GameObjects.Container {
             this.dead_particle_manager.destroy()
             this.boost_particle_manager.destroy()            
         }, [], this)
-        this.text.destroy()
+        if (this.text != undefined) {
+            this.text.destroy()
+        }
     }
 
     on_update_payload(): boolean {
@@ -107,6 +107,14 @@ export class PlayerRenderer extends GameObjects.Container {
             this.destroyed = true
             return true
         }
+        if (!this.initialized) {
+            this.player_name = player.name
+            this.text = this.scene.add.text(0, 0, this.player_name, { fontFamily: 'Verdana, "Times New Roman", Tahoma, serif', boundsAlignH: "center" })
+            this.text.scale = 0.15
+            this.text.setOrigin(0.5)
+            this.initialized = true
+        }
+        (this.text as GameObjects.Text).text = `${this.player_name} (${player.kills})`
         this.x = player.x
         this.y = player.y
         this.vx = player.vx

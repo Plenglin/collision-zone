@@ -4,7 +4,7 @@ import { GameState, Wall, Player } from "../gamestate";
 import { Client, ClientState } from '../protocol';
 import { PlayerRenderer } from "./player";
 import { WallRenderer } from "./wall";
-import { PlayerInputHandler } from "./input";
+import { PlayerInputHandler, InputRenderer } from "./input";
 
 
 
@@ -55,7 +55,7 @@ export class GameScene extends Scene {
         })
 
         const cam = this.cameras.main
-        cam.zoom = 1
+        cam.zoom = this.client.is_player ? 4 : 1
 
         this.scale.addListener(Phaser.Scale.Events.RESIZE, (size: any) => {
             cam.setSize(size.width, size.height)
@@ -94,6 +94,9 @@ export class GameScene extends Scene {
                 this.cameras.main.startFollow(pr)
                 if (this.player_input == undefined) {
                     this.player_input = new PlayerInputHandler(this, this.client, pr)
+                    const renderer = new InputRenderer(this, this.player_input)
+                    this.add.existing(this.player_input)
+                    this.add.existing(renderer)
                 }
             }
         } else {

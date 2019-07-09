@@ -21,6 +21,7 @@ export class LoadingScene extends Scene {
         this.load.image("boost-layer", "static/images/boost-layer.png")
         this.load.image("boost-particle", "static/images/boost-particle.png")
         this.load.image("dead-particle", "static/images/dead-particle.png")
+        this.load.image("arrow", "static/images/arrow.png")
 
         this.load.on('progress', (value: any) => {
             console.log("loading", value)
