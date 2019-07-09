@@ -114,16 +114,21 @@ export class GameScene extends Scene {
                 this.add_player(p.id)
             }
         }
-        this.gs.on_kill = (killer, victim, via) => {
+        this.gs.on_kill = (victim, via, killer) => {
             const kf = $('#kill-feed')
-            const id = `kf-${killer.id}-${victim.id}`
+            const id = `kf-${via.id}-${victim.id}`
+            const adj = DEAD_ADJECTIVES[Math.random() * DEAD_ADJECTIVES.length >> 0]
+            const noun = CORPSE_NOUNS[Math.random() * CORPSE_NOUNS.length >> 0]
             const verb = KILL_VERBS[Math.random() * KILL_VERBS.length >> 0]
-            let msg = `<b>${killer.name}</b> ${verb} <b>${victim.name}</b>`
+            let msg;
+            if (killer == undefined) {
+                msg = `<b>${victim.name} died to ${via.name}'s ${adj} ${noun}</b>`
+            } else {
+                msg = `<b>${killer.name}</b> ${verb} <b>${victim.name}</b>`
 
-            if (via != undefined) {
-                const adj = DEAD_ADJECTIVES[Math.random() * KILL_VERBS.length >> 0]
-                const noun = CORPSE_NOUNS[Math.random() * KILL_VERBS.length >> 0]
-                msg += ` with <b>${via.name}</b>'s ${adj} ${noun}`
+                if (via !== killer) {
+                    msg += ` with <b>${via.name}</b>'s ${adj} ${noun}`
+                }
             }
 
             kf.append($(`<p id="${id}">${msg}</p>`))
