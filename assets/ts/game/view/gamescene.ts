@@ -7,6 +7,49 @@ import { WallRenderer } from "./wall";
 import { PlayerInputHandler, InputRenderer } from "./input";
 
 
+const KILL_VERBS = [
+    "killed",
+    "destroyed",
+    "decimated",
+    "obliterated",
+    "discombobulated",
+    "bapped",
+    "booped",
+    "screwed over",
+    "screwed up",
+    "exploded",
+    "removed",
+    "assassinated",
+    "murdered",
+    "kaboomed",
+    "rekt",
+    "wrecked",
+    "ended",
+    "terminated",
+    "oofed",
+    "totaled",
+    "K.O.'d",
+    "backstabbed",
+    "stopped",
+    "whooped",
+]
+
+const DEAD_ADJECTIVES = [
+    "totaled",
+    "dead",
+    "obliterated",
+    "destroyed",
+    "oofed",
+    "exploded",
+    "blown-up",
+]
+
+const CORPSE_NOUNS = [
+    "corpse",
+    "body",
+    "face",
+    "car",
+]
 
 interface GameSceneArgs {
     client: Client
@@ -74,7 +117,16 @@ export class GameScene extends Scene {
         this.gs.on_kill = (killer, victim, via) => {
             const kf = $('#kill-feed')
             const id = `kf-${killer.id}-${victim.id}`
-            kf.append($(`<p id="${id}">${killer.name} killed ${victim.name}</p>`))
+            const verb = KILL_VERBS[Math.random() * KILL_VERBS.length >> 0]
+            let msg = `<b>${killer.name}</b> ${verb} <b>${victim.name}</b>`
+
+            if (via != undefined) {
+                const adj = DEAD_ADJECTIVES[Math.random() * KILL_VERBS.length >> 0]
+                const noun = CORPSE_NOUNS[Math.random() * KILL_VERBS.length >> 0]
+                msg += ` with <b>${via.name}</b>'s ${adj} ${noun}`
+            }
+
+            kf.append($(`<p id="${id}">${msg}</p>`))
             setTimeout(() => {
                 $('#' + id).remove()
             }, 5000);
