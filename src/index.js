@@ -2,7 +2,8 @@ const express = require('express')
 const expressStaticGzip = require('express-static-gzip')
 const path = require('path')
 
-const PORT = 8080
+const NODE_ENV = process.env.NODE_ENV || 'dev'
+const PORT = (NODE_ENV == 'production') ? 80 : 8080
 const ROOT = path.resolve(__dirname, '..')
 
 const app = express()

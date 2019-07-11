@@ -3,6 +3,7 @@ import * as $ from 'jquery';
 import { connect_to_server } from './protocol';
 import { GameScene } from './view/gamescene';
 import { load_assets } from './view/loadingscene';
+import * as Cookie from 'js-cookie'
 
 
 $('#field-username').keyup((event) => {
@@ -40,7 +41,7 @@ function set_up_modal(game: Phaser.Game) {
             $('#player-config-modal').modal('hide')
             game.scene.start('game_scene', {client: client})
 
-            document.cookie = username
+            Cookie.set('username', username)
         } catch (error) {
             console.error(error)
             $('#btn-play').removeClass('disabled')
@@ -73,5 +74,11 @@ $.get("/mm/spectate", async (data: any) => {
     load_scene.scene.start('game_scene', { client: client })
 })
 
-$('#field-username').val(document.cookie)
-$('#player-config-modal').modal('show')
+$(() => {
+    var username = Cookie.get('username')
+    if (username == undefined) {
+        username = ''
+    }
+    $('#field-username').val(username)
+    $('#player-config-modal').modal('show')
+})
