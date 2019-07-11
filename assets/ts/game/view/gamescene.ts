@@ -64,6 +64,8 @@ export class GameScene extends Scene {
     highScores: Array<PlayerRenderer> = []
     player_input?: PlayerInputHandler
 
+    player_initialized: boolean = false
+
     constructor() {
         super('game_scene')
         console.log("Constructor of scene")
@@ -168,14 +170,13 @@ export class GameScene extends Scene {
     update() {
         if (this.client.is_player) {
             const pr = this.players.get(this.client.player_id)
-            if (pr != undefined) {
-                this.cameras.main.startFollow(pr)
-                if (this.player_input == undefined) {
-                    this.player_input = new PlayerInputHandler(this, this.client, pr)
-                    const renderer = new InputRenderer(this, this.player_input)
-                    this.add.existing(this.player_input)
-                    this.add.existing(renderer)
-                }
+            if (pr != undefined && !this.player_initialized) {
+                this.player_initialized = true
+                this.cameras.main.startFollow(pr, undefined, 0.3, 0.3)
+                this.player_input = new PlayerInputHandler(this, this.client, pr)
+                const renderer = new InputRenderer(this, this.player_input)
+                this.add.existing(this.player_input)
+                this.add.existing(renderer)
             }
         } else {
             this.cameras.main.centerOn(0, 0)
