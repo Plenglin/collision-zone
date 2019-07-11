@@ -41,3 +41,8 @@
     color: white;
     line-height: 0.5;
 }
+
+#ad-bottom {
+    position: absolute;
+    bottom: 0;
+}
