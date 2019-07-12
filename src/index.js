@@ -6,6 +6,12 @@ const NODE_ENV = process.env.NODE_ENV || 'dev'
 const PORT = (NODE_ENV == 'production') ? 80 : 8080
 const ROOT = path.resolve(__dirname, '..')
 
+if (NODE_ENV == 'production') {
+    console.info("Running in production mode.")
+} else {
+    console.warn("NOT RUNNING IN PRODUCTION MODE.")
+}
+
 const app = express()
 
 app.get('/', (req, res) => {
@@ -34,7 +40,9 @@ app.use('/static/scripts', expressStaticGzip('./public/scripts', {
     }
 }))
 
-app.use('/static/sourcemaps', express.static('./public/sourcemaps'))
+if (NODE_ENV != 'production') {
+    app.use('/static/sourcemaps', express.static('./public/sourcemaps'))
+}
 
 app.use('/static/styles', express.static('./public/styles'))
 app.use('/static/styles/bootstrap', express.static('./node_modules/bootstrap/dist/css'))

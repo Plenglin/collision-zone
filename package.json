@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
-    "webpack": "npx webpack",
-    "webpack-watch": "npx webpack --watch --mode=development"
+    "build:prod": "npx webpack --config webpack.prod.js",
+    "build:dev": "npx webpack --config webpack.dev.js --watch --mode=development"
   },
   "author": "",
   "license": "ISC",
@@ -33,6 +33,7 @@
     "typescript": "^3.5.2",
     "webpack": "^4.35.3",
     "webpack-bundle-analyzer": "^3.3.2",
-    "webpack-cli": "^3.3.5"
+    "webpack-cli": "^3.3.5",
+    "webpack-merge": "^4.2.1"
   }
 }
