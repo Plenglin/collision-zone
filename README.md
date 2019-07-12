@@ -1,4 +1,4 @@
-Snowplow Derby Main Server
+collision.zone Main Server
 ==========================
 
 ## Features to focus on
