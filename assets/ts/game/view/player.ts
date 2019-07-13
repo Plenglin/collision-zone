@@ -1,6 +1,9 @@
 import { GameObjects, Scene } from "phaser";
 import { GameState, Player } from "../gamestate";
 
+
+const INTERP_MAX = 1. / 10
+
 export class PlayerRenderer extends GameObjects.Container {
     alive_sprite: GameObjects.Sprite
     invuln_sprite: GameObjects.Sprite
@@ -19,6 +22,8 @@ export class PlayerRenderer extends GameObjects.Container {
     
     destroyed: boolean = false
     initialized: boolean = false
+
+    interp: number = 0
 
     constructor(scene: Scene, private game_state: GameState, public player_id: integer) {
         super(scene)
@@ -67,10 +72,11 @@ export class PlayerRenderer extends GameObjects.Container {
         if (player == undefined) {
             return
         }
-        const dts = delta / 1000
-        this.rotation += player.omega * dts
-        this.x += this.vx * dts
-        this.y += this.vy * dts
+
+        this.interp = Math.min(this.interp + delta / 1000, INTERP_MAX)
+        this.rotation = player.angle + player.omega * this.interp
+        this.x = player.x + player.vx * this.interp
+        this.y = player.y + player.vy * this.interp
 
         const emitAngle = -Math.atan2(player.vy, player.vy) * 180 / Math.PI 
         this.boost_particle_emitter.setAngle({ min: emitAngle - 30, max: emitAngle + 30})
@@ -123,6 +129,7 @@ export class PlayerRenderer extends GameObjects.Container {
         this.vy = player.vy
         this.rotation = player.angle
         this.destroyed = false
+        this.interp = 0
         return false
     }
 }
