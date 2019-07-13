@@ -2,9 +2,15 @@
 <html>
 <head>
   <title>collision.zone</title>
+  <meta name="description" content="Crash your car into other people's cars! Just don't do it in real life!"/>
+
   <link rel="stylesheet" href="/static/styles/bootstrap/bootstrap.min.css">
   <link rel="stylesheet" href="/static/styles/game.css">
 
+  <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-58113760-2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -13,20 +19,21 @@
 
     gtag('config', 'UA-58113760-2');
   </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
   <script>
+    $(document).ready(function() {
       (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-5400957932574910",
-            enable_page_level_ads: true
+        google_ad_client: "ca-pub-5400957932574910",
+        enable_page_level_ads: true
       });
+    })
   </script>
 </head>
 <body>
   
   <div id="outer">
     <div id="bs-container">
-      <div class="modal fade" id="player-config-modal" data-keyboard="false" role="dialog" aria-labelledby="player-config-modal-label" aria-hidden="true" data-backdrop="static">
-        
+      <div class="modal fade" id="player-config-modal" data-keyboard="false" role="dialog" aria-labelledby="player-config-modal-label" aria-hidden="true" data-backdrop="static">  
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             
@@ -41,13 +48,14 @@
                 </div>
                 <input id="field-username" type="text" class="form-control" aria-labelledby="field-username-label" placeholder="N00bM45t3r69">
               </div>
-              <h5>Instructions</h5>
-              <ul>
-                <li>Left click to boost</li>
-                <li>Right click to brake</li>
-                <li>If you get hit in the back, you immediately die</li>
-              </ul>
-              <p>THIS SITE USES COOKIES</p>
+              <p><small>Move your mouse to move your car. Left click to boost.</small></p>
+              
+              <div id="alert-play-error-container" class="alert alert-danger alert-dismissible fade show" role="alert" style="display:none;">
+                <span id="alert-play-error-msg">Error mesage</span>
+                <button type="button" class="close" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
             </div>
             <div class="modal-footer">
               <div id="spinner-connect" class="spinner-border text-status" role="status" style="display: none;">
@@ -57,6 +65,15 @@
             </div>
           </div>
         </div>
+
+        <div id="cookie-consent" class="alert alert-dark alert-dismissible fade show" role="alert">
+          <h4 class="alert-heading">Cookie Consent Information</h4>
+          This site uses cookies. By using this site, you consent to the collection and use of cookies.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -110,20 +127,6 @@
   <div id="kill-feed">
   </div>
   
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <!-- Bottom -->
-  <ins
-    id="ad-bottom" 
-      class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-5400957932574910"
-      data-ad-slot="2556800487"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-  <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-
   <script type="text/javascript" src="/static/scripts/vendors.js"></script>
   <script type="text/javascript" src="/static/scripts/game.js"></script>
 </body>
