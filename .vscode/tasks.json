@@ -25,6 +25,13 @@
             "problemMatcher": [
                 "$eslint-stylish"
             ]
+        },
+        {
+            "type": "npm",
+            "script": "build:dev",
+            "problemMatcher": [
+                "$eslint-stylish"
+            ]
         }
     ]
 }

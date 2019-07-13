@@ -184,12 +184,16 @@ export function connect_to_server(base_url: string, player_data?: PlayerInitData
             switch (ev.code) {
                 case ErrorCode.MALFORMED_REQUEST:
                     reject(new Error("Malformed request"))
+                    break
                 case ErrorCode.INVALID_PLAYER_CLASS:
                     reject(new Error("Invalid player class"))
+                    break
                 case ErrorCode.INVALID_USERNAME:
                     reject(new Error("Invalid username"))
+                    break
+                default:
+                    reject(new Error(`Connection unexpectedly closed (code ${ev.code})`))
             }
-            reject(new Error("Error in initialization"))
         })
     })
 }

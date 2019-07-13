@@ -30,7 +30,7 @@ function set_up_modal(game: Phaser.Game) {
                 throw new Error('Username cannot be empty')
             }
             if (username.length > 20) {
-                throw new Error('Username cannot be longer than 20 chars')
+                throw new Error('Username cannot be longer than 20 characters')
             }
 
             const client = await connect_to_server(mm_data.host, {
@@ -44,6 +44,8 @@ function set_up_modal(game: Phaser.Game) {
             Cookie.set('username', username)
         } catch (error) {
             console.error(error)
+            $('#alert-play-error-msg').text(error)
+            $('#alert-play-error-container').show()
             $('#btn-play').removeClass('disabled')
         } finally {
             $('#spinner-connect').hide()
@@ -81,4 +83,7 @@ $(() => {
     }
     $('#field-username').val(username)
     $('#player-config-modal').modal('show')
+    $('#alert-play-error-container .close').on('click', function() {
+        $(this).parent().hide()
+    })
 })
