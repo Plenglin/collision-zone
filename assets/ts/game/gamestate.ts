@@ -100,7 +100,9 @@ export class GameState {
         for (var i = 0; i < playerCount; i++) {
             const player = Player.readFromStream(stream)
             obj.players.set(player.id, player)
-            obj.high_scores.push(player)
+            if (player.is_alive) {
+                obj.high_scores.push(player)
+            }
         }
         return obj
     }
