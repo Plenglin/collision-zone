@@ -179,6 +179,7 @@ export class GameScene extends Scene {
                 this.player_initialized = true
                 this.cameras.main.startFollow(pr, undefined, 0.15, 0.15)
                 this.player_input = new PlayerInputHandler(this, this.client, pr)
+                this.player_input.set_active_event_receiver()
                 const renderer = new InputRenderer(this, this.player_input)
                 this.add.existing(this.player_input)
                 this.add.existing(renderer)
