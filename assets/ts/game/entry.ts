@@ -13,12 +13,11 @@ $('#field-username').keyup((event) => {
 })
 
 function set_up_modal(game: Phaser.Game) {
-    const btn = $('#btn-play')
-    btn.click(async () => {
-        if (btn.hasClass("disabled")) {
+    $('#btn-play').click(async function() {
+        if ($(this).hasClass("disabled")) {
             return;
         }
-        btn.addClass('disabled')
+        $(this).addClass('disabled')
         $('#spinner-connect').show()
 
         try {
@@ -86,4 +85,5 @@ $(() => {
     $('#alert-play-error-container .close').on('click', function() {
         $(this).parent().hide()
     })
+    $('#info-death').hide()
 })
