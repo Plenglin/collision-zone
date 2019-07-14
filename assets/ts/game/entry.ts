@@ -4,6 +4,7 @@ import { connect_to_server } from './protocol';
 import { GameScene } from './view/gamescene';
 import { load_assets } from './view/loadingscene';
 import * as Cookies from 'js-cookie'
+import { PlayerInputHandler } from './view/input';
 
 
 $('#field-username').keyup((event) => {
@@ -90,6 +91,8 @@ $(() => {
     if (Cookies.get('cookie-consented') === $('#cookie-consent').data('last-updated')) {
         $('#cookie-consent').hide()
     }
+
+    PlayerInputHandler.bind_listeners_to_dom()
 })
 
 $("#btn-close-cookie-consent").click(function() {

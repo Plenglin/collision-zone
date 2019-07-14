@@ -4,57 +4,80 @@ import { Player } from "../gamestate";
 import * as $ from 'jquery'
 import { PlayerRenderer } from "./player";
 
+
 export class PlayerInputHandler extends GameObjects.GameObject {
+    static event_receiver?: PlayerInputHandler
     dx: number = 0
     dy: number = 0
+
+    static bind_listeners_to_dom() {
+        const receiver = $('body')
+        receiver.mousemove((event) => {
+            const active = PlayerInputHandler.event_receiver
+            if (active == undefined) {
+                return
+            }
+            active.on_mouse_move(event)
+        })
+        receiver.mousedown((event) => {
+            const active = PlayerInputHandler.event_receiver
+            if (active == undefined) {
+                return
+            }
+            active.on_mouse_down(event)
+        })
+        receiver.mouseup((event) => {
+            const active = PlayerInputHandler.event_receiver
+            if (active == undefined) {
+                return
+            }
+            active.on_mouse_up(event)
+        })
+        receiver.bind('contextmenu', (event) => {
+            return false
+        })
+    }
     
     constructor(scene: Scene, private client: Client, public player: PlayerRenderer) {
         super(scene, 'player-input-handler')
         if (!client.is_player) {
             throw "Client MUST be a player!"
         }
-
-        // this.pointer = this.scene.game.input.activePointer
-        // this.scene.input.setPollAlways()
-        // this.scene.input.on('pointermove', () => {
-        //     const p = scene.cameras.main.getWorldPoint(this.pointer.x, this.pointer.y)
-        //     const dx = p.x - this.player.x
-        //     const dy = p.y - this.player.y
-        //     console.debug(dx, dy)
-        //     client.setPlayerInput(dx, dy)
-        // })
-
-        const receiver = $('body')
-        receiver.mousemove((event) => {
-            const p = scene.cameras.main.getWorldPoint(event.pageX, event.pageY)
-            this.dx = p.x - this.player.x
-            this.dy = p.y - this.player.y
-            console.debug(this.dx, this.dy)
-            client.set_player_input(this.dx, this.dy)
-        })
-        receiver.mousedown((event) => {
-            console.debug(event)
-            switch (event.button) {
-                case 0:  // Left
-                    client.send_boost()
-                    break;
-                case 2:  // Right
-                    client.send_brake(true)
-                    break;
-            }
-        })
-        receiver.mouseup((event) => {
-            console.debug(event)
-            switch (event.button) {
-                case 2:  // Right
-                    client.send_brake(false)
-                    break;
-            }
-        })
-        receiver.bind('contextmenu', (event) => {
-            return false
-        })
     }
+
+    set_active_event_receiver() {
+        PlayerInputHandler.event_receiver = this
+    }
+
+    on_mouse_move(event: any) {
+        const p = this.scene.cameras.main.getWorldPoint(event.pageX, event.pageY)
+        this.dx = p.x - this.player.x
+        this.dy = p.y - this.player.y
+        console.debug(this.dx, this.dy)
+        this.client.set_player_input(this.dx, this.dy)
+    }
+
+    on_mouse_down(event: any) {
+        console.debug(event)
+        switch (event.button) {
+            case 0:  // Left
+                this.client.send_boost()
+                break;
+            case 2:  // Right
+                this.client.send_brake(true)
+                break;
+        }
+    }
+
+    on_mouse_up(event: any) {
+        console.debug(event)
+        switch (event.button) {
+            case 2:  // Right
+                this.client.send_brake(false)
+                break;
+        }
+    }
+    
 }
 
 export class InputRenderer extends GameObjects.Sprite {
