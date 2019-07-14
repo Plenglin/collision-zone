@@ -65,6 +65,7 @@ export class GameScene extends Scene {
     player_input?: PlayerInputHandler
 
     player_initialized: boolean = false
+    start_time: Date
 
     constructor() {
         super('game_scene')
@@ -92,6 +93,7 @@ export class GameScene extends Scene {
     create() {
         console.info("GAME PHASE: Create")
 
+        this.start_time = new Date()
         this.gs = this.client.game_state as GameState
 
         this.gs.walls.forEach(w => {
@@ -141,14 +143,13 @@ export class GameScene extends Scene {
             if (children.length > 10) {
                 children[0].remove()
             }
+
+            if (victim.id == this.client.player_id) {
+                this.on_this_player_killed(victim, via, killer)
+            }
         }
         this.gs.on_high_scores_change = () => {
-            $('#high-scores > table > tbody').children().each((i, element) => {
-                console.log('i', i, element)
-                const player = this.gs.high_scores[i]
-                $(element).children('.high-score-name').text(player.name)
-                $(element).children('.high-score-kills').text(player.kills)
-            })
+            this.update_high_scores()
         }
 
         this.client.on_update_payload = () => {
@@ -177,6 +178,7 @@ export class GameScene extends Scene {
                 const renderer = new InputRenderer(this, this.player_input)
                 this.add.existing(this.player_input)
                 this.add.existing(renderer)
+                this.update_high_scores()
             }
         } else {
             this.cameras.main.centerOn(0, 0)
@@ -197,6 +199,31 @@ export class GameScene extends Scene {
         player.x = data.x
         player.y = data.y
         return player
+    }
+
+    private update_high_scores() {
+        $('#high-scores > table > tbody').children().each((i, element) => {
+            console.log('i', i, element)
+            const player = this.gs.high_scores[i]
+            $(element).children('.high-score-name').text(player.name)
+            $(element).children('.high-score-kills').text(player.kills)
+        })
+    }
+
+    private on_this_player_killed(victim: Player, via: Player, killer?: Player) {
+        console.info("this player killed")
+
+        const total_time = Math.floor((new Date().getTime() - this.start_time.getTime()) / 1000)
+        const mins = Math.floor(total_time / 60)
+        const secs = ("00" + (total_time % 60)).slice(-2)
+        $('#info-kill-count').text(victim.kills)
+        $('#info-survival-time').text(`${mins}:${secs}`)
+        if (killer != undefined) {
+            $('#info-kill-msg').text(`${killer.name} killed you!`)
+        }
+        $('#info-death').show()
+        $('#player-config-modal').modal('show')
+        $('#btn-play').removeClass('disabled')
     }
 
 }
