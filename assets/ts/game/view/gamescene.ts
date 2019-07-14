@@ -177,7 +177,7 @@ export class GameScene extends Scene {
             if (pr != undefined && !this.player_initialized) {
                 console.info("Initializing PLAY mode data")
                 this.player_initialized = true
-                this.cameras.main.startFollow(pr, undefined, 0.3, 0.3)
+                this.cameras.main.startFollow(pr, undefined, 0.15, 0.15)
                 this.player_input = new PlayerInputHandler(this, this.client, pr)
                 const renderer = new InputRenderer(this, this.player_input)
                 this.add.existing(this.player_input)
