@@ -3,7 +3,7 @@ import * as $ from 'jquery';
 import { connect_to_server } from './protocol';
 import { GameScene } from './view/gamescene';
 import { load_assets } from './view/loadingscene';
-import * as Cookie from 'js-cookie'
+import * as Cookies from 'js-cookie'
 
 
 $('#field-username').keyup((event) => {
@@ -40,7 +40,7 @@ function set_up_modal(game: Phaser.Game) {
             $('#player-config-modal').modal('hide')
             game.scene.start('game_scene', {client: client})
 
-            Cookie.set('username', username)
+            Cookies.set('username', username)
         } catch (error) {
             console.error(error)
             $('#alert-play-error-msg').text(error)
@@ -76,7 +76,7 @@ $.get("/mm/spectate", async (data: any) => {
 })
 
 $(() => {
-    var username = Cookie.get('username')
+    var username = Cookies.get('username')
     if (username == undefined) {
         username = ''
     }
@@ -86,4 +86,13 @@ $(() => {
         $(this).parent().hide()
     })
     $('#info-death').hide()
+
+    if (Cookies.get('cookie-consented') === $('#cookie-consent').data('last-updated')) {
+        $('#cookie-consent').hide()
+    }
+})
+
+$("#btn-close-cookie-consent").click(function() {
+    $('#cookie-consent').hide()
+    Cookies.set('cookie-consented', $('#cookie-consent').data('last-updated'))
 })
