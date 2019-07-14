@@ -73,12 +73,15 @@ export class GameScene extends Scene {
     }
 
     init(data: GameSceneArgs) {
+        console.info("GAME PHASE: Init", data)
         if (this.client != undefined) {
+            console.info("Closing old client")
             this.client.close()
         }
         this.highScores = []
         this.walls = []
         this.players = new Map()
+        this.player_initialized = false
         if (data.client.state != ClientState.ACTIVE) {
             throw "Client must be ACTIVE!"
         }
@@ -172,6 +175,7 @@ export class GameScene extends Scene {
         if (this.client.is_player) {
             const pr = this.players.get(this.client.player_id)
             if (pr != undefined && !this.player_initialized) {
+                console.info("Initializing PLAY mode data")
                 this.player_initialized = true
                 this.cameras.main.startFollow(pr, undefined, 0.3, 0.3)
                 this.player_input = new PlayerInputHandler(this, this.client, pr)
@@ -203,7 +207,7 @@ export class GameScene extends Scene {
 
     private update_high_scores() {
         $('#high-scores > table > tbody').children().each((i, element) => {
-            console.log('i', i, element)
+            console.debug('i', i, element)
             const player = this.gs.high_scores[i]
             $(element).children('.high-score-name').text(player.name)
             $(element).children('.high-score-kills').text(player.kills)

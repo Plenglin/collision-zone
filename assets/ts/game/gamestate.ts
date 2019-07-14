@@ -128,7 +128,7 @@ export class GameState {
 
     applyPlayerKillEvents(stream: ByteArrayInputStream) {
         const count = stream.readShort()
-        console.log("Reading", count, "kill events")
+        console.debug("Reading", count, "kill events")
         const deadPlayers: Array<integer> = []
         for (var i = 0; i < count; i++) {
             const killerID = stream.readShort()
@@ -161,7 +161,7 @@ export class GameState {
 
     applyPlayerJoinedEvents(stream: ByteArrayInputStream) {
         const count = stream.readShort();
-        console.info("Reading", count, "new players")
+        console.debug("Reading", count, "new players")
         for (var i = 0; i < count; i++) {
             const player = Player.readFromStream(stream)
             this.players.set(player.id, player)
