@@ -1,3 +1,7 @@
+set (Boost_USE_STATIC_LIBS OFF)
+find_package (Boost REQUIRED COMPONENTS log)
+include_directories (${Boost_INCLUDE_DIRS})
+
 add_library(collision_zone_game
         Event.cpp
         Event.hpp
@@ -12,5 +16,8 @@ add_library(collision_zone_game
         physics.cpp
         physics.hpp
         util.hpp)
-target_link_libraries(collision_zone_game collision_zone_common)
+target_link_libraries(collision_zone_game
+        collision_zone_common
+        box2d
+        ${Boost_LIBRARIES})
 target_include_directories(collision_zone_game PRIVATE "..")
